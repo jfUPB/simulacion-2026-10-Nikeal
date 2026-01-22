@@ -161,11 +161,76 @@ function draw() {
 
 <img width="279" height="198" alt="image" src="https://github.com/user-attachments/assets/c940b70b-5fcd-4ee8-b454-1cfdbf8430f6" />
 
+- **Actividad 5**
+
+1. Explica por qué usaste esta técnica y qué resultados esperabas obtener.
+
+Use esta tecnica porque me permite introducir movimientos "inesperados" y poco repetitivos que no se asemejan al movimiento uniforme ni gaussiano, con lo cual buscaba un movimiento mas "natural, acercandose al comportamiento de algunos sistemas fisicos y biologicos, agregando ese suceso inesperado que no se suele ver en sistemas controlados o computacionales.
+
+2. Copia el código en tu bitácora.
+
+let walker;
+
+function setup() {
+  createCanvas(640, 240);
+  background(255);
+  walker = new Walker();
+}
+
+function draw() {
+  walker.step();
+  walker.show();
+}
+
+class Walker {
+  constructor() {
+    this.x = width / 2;
+    this.y = height / 2;
+  }
+
+  step() {
+    let r = random(1);
+    let xstep, ystep;
+
+    // Lévy flight: pequeña probabilidad de salto grande
+    if (r < 0.01) {
+      xstep = random(-100, 100);
+      ystep = random(-100, 100);
+    } else {
+      xstep = random(-2, 2);
+      ystep = random(-2, 2);
+    }
+
+    this.x += xstep;
+    this.y += ystep;
+
+    // Mantener dentro del lienzo
+    this.x = constrain(this.x, 0, width);
+    this.y = constrain(this.y, 0, height);
+  }
+
+  show() {
+    noStroke();
+    fill(0, 30);
+    circle(this.x, this.y, 4);
+  }
+}
+
+3. Coloca en enlace a tu sketch en p5.js en tu bitácora.
+
+https://editor.p5js.org/Nikeal/sketches/ZzKCG_M8A
+
+4. Selecciona una captura de pantalla de tu sketch y colócala en tu bitácora.
+
+<img width="633" height="238" alt="image" src="https://github.com/user-attachments/assets/db628a6f-8a2c-4868-9b80-58fb9351d015" />
+
+
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 
 

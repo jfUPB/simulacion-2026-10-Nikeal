@@ -12,10 +12,6 @@ La aleatoriedad influye en la creacion de ideas y patrones, que surgen de la mis
 
 Codigo inicial:
 
-// The Nature of Code
-// Daniel Shiffman
-// http://natureofcode.com
-
 let walker;
 
 function setup() {
@@ -81,10 +77,48 @@ Al ejecutar el codigo, el puntero se seguia moviendo de forma aleatoria, pero no
 
 4. Ocurrió lo que esperabas? ¿Por qué crees que sí o por qué crees que no? Aunque el resultado fue un poco "extremo", si ocurrio el resultado que esperaba, porque cumplio con la hipotesis que habia planteado, ya que se movia de forma aleatoria pero con una tendencia de ir a la derecha.
 
+- **Actividad 3**
+
+1. En tus propias palabras cuál es la diferencia entre una distribución uniforme y una no uniforme de números aleatorios.
+   
+-La distribucion uniforme es donde todos los valores tienen la misma probabilidad de que ocurran, en el ejemplo pasado cuando se usa random(100), significa que cualquier valor entre 0 y 100 puede pasar con la misma probabilidad, haciendo que se vean de forma "homogenea".
+
+- La distribucion no uniforme ocurre cuando algunos valores tienen mas probabilidad de ocurrir que otro, un ejemplo de esto es la modificacion que hice en la actividad 2, donde el puntero tiende a la derecha. En la distribucion gaussiana, los valores cerca a la media pasan con mas frecuencia pero los valores externos pasan pocas veces, haciendo que se vean patrones en ciertas zonas.
+
+2. Modifica el código de la caminata aleatoria para que utilice una distribución no uniforme, favoreciendo el movimiento hacia la derecha.
+
+step() {
+  let r = random(10);
+
+  if (r < 3) {
+    this.x++;        
+  } else if (r < 5) {
+    this.x--;        
+  } else if (r < 7) {
+    this.y++;       
+  } else {
+    this.y--;        
+  }
+
+Probabilidades de movimiento:
+
+r < 3 → movimiento a la derecha (this.x++)
+30% de probabilidad
+
+3 ≤ r < 5 → movimiento a la izquierda (this.x--)
+20% de probabilidad
+
+5 ≤ r < 7 → movimiento hacia abajo (this.y++)
+20% de probabilidad
+
+r ≥ 7 → movimiento hacia arriba (this.y--)
+30% de probabilidad
+
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 

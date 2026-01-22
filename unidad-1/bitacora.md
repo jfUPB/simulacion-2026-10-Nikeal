@@ -114,11 +114,59 @@ r < 3 → movimiento a la derecha (this.x++)
 r ≥ 7 → movimiento hacia arriba (this.y--)
 30% de probabilidad
 
+<img width="203" height="130" alt="image" src="https://github.com/user-attachments/assets/ecfb0519-4704-4012-b97f-126843341e2b" />
+
+- **Actividad 4**
+
+1. Crea un nuevo sketch en p5.js que represente una distribución normal.
+
+2. Copia el código en tu bitácora.
+
+function setup() {
+  createCanvas(640, 240);
+  background(255);
+}
+
+function draw() {
+  translate(width / 2, height / 2);
+
+  // Distancia con distribución normal
+  let r = abs(randomGaussian(0, 40));
+
+  // Invertir la distribución: empujar hacia los bordes
+  let maxR = min(width, height) / 2;
+  let invertedR = map(r, 0, 120, maxR, 0);
+
+  // Ángulo que apunta hacia esquinas
+  let angle = random([PI / 4, 3 * PI / 4, 5 * PI / 4, 7 * PI / 4]);
+
+  let x = invertedR * cos(angle);
+  let y = invertedR * sin(angle);
+
+  // Color aleatorio en escala de azules
+  let blueValue = random(0, 255);
+  let redValue = random(0, 255);
+  fill(redValue, 0, blueValue, 30);
+  noStroke();
+
+  circle(x, y, 4);
+}
+
+
+3. Coloca en enlace a tu sketch en p5.js en tu bitácora.
+
+- https://editor.p5js.org/Nikeal/sketches/NddHBQ3SO
+
+4. Selecciona una captura de pantalla de tu sketch y colócala en tu bitácora.
+
+<img width="279" height="198" alt="image" src="https://github.com/user-attachments/assets/c940b70b-5fcd-4ee8-b454-1cfdbf8430f6" />
+
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 
 

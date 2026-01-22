@@ -2,11 +2,11 @@
 
 ## Bitácora de proceso de aprendizaje
 
-- **Actividad 1**
+- ### **Actividad 1**
 - "Piensa y describe en una sola frase y en tus propias palabras cómo la aleatoriedad influye en el arte generativo."
 La aleatoriedad influye en la creacion de ideas y patrones, que surgen de la misma fuente donde pueden surgir distintas posibilidades que contienen la esencia, dandole asi al arte y codigo su propio caracter.
 
-- **Actividad 2**
+- ### **Actividad 2**
 
 - Realiza el siguiente experimento y reporta los resultados en tu bitácora:
 
@@ -77,7 +77,7 @@ Al ejecutar el codigo, el puntero se seguia moviendo de forma aleatoria, pero no
 
 4. Ocurrió lo que esperabas? ¿Por qué crees que sí o por qué crees que no? Aunque el resultado fue un poco "extremo", si ocurrio el resultado que esperaba, porque cumplio con la hipotesis que habia planteado, ya que se movia de forma aleatoria pero con una tendencia de ir a la derecha.
 
-- **Actividad 3**
+- ### **Actividad 3**
 
 1. En tus propias palabras cuál es la diferencia entre una distribución uniforme y una no uniforme de números aleatorios.
    
@@ -116,7 +116,7 @@ r ≥ 7 → movimiento hacia arriba (this.y--)
 
 <img width="203" height="130" alt="image" src="https://github.com/user-attachments/assets/ecfb0519-4704-4012-b97f-126843341e2b" />
 
-- **Actividad 4**
+- ### **Actividad 4**
 
 1. Crea un nuevo sketch en p5.js que represente una distribución normal.
 
@@ -161,7 +161,7 @@ function draw() {
 
 <img width="279" height="198" alt="image" src="https://github.com/user-attachments/assets/c940b70b-5fcd-4ee8-b454-1cfdbf8430f6" />
 
-- **Actividad 5**
+- ### **Actividad 5**
 
 1. Explica por qué usaste esta técnica y qué resultados esperabas obtener.
 
@@ -230,6 +230,7 @@ https://editor.p5js.org/Nikeal/sketches/ZzKCG_M8A
 
 
 ## Bitácora de reflexión
+
 
 
 

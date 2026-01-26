@@ -4,7 +4,7 @@
 
 ### **Actividad 1**
 - "Piensa y describe en una sola frase y en tus propias palabras cómo la aleatoriedad influye en el arte generativo."
-La aleatoriedad influye en la creacion de ideas y patrones, que surgen de la misma fuente donde pueden surgir distintas posibilidades que contienen la esencia, dandole asi al arte y codigo su propio caracter.
+- La aleatoriedad influye en la creacion de ideas y patrones, que surgen de la misma fuente donde pueden surgir distintas posibilidades que contienen la esencia, dandole asi al arte y codigo su propio caracter.
 
 ### **Actividad 2**
 
@@ -12,39 +12,39 @@ La aleatoriedad influye en la creacion de ideas y patrones, que surgen de la mis
 
 Codigo inicial:
 
-let walker;
+let walker; // Declara una variable global llamada `walker`. Aquí se guardará una instancia (objeto) de la clase `Walker`.
 
-function setup() {
-  createCanvas(640, 240);
-  walker = new Walker();
-  background(255);
+function setup() {  // Función especial de p5.js que se ejecuta una sola vez al inicio del programa.
+  createCanvas(640, 240); // Crea un lienzo (canvas) de 640 píxeles de ancho y 240 de alto.
+  walker = new Walker(); // Crea un nuevo objeto de la clase Walker y lo guarda en la variable walker.
+  background(255); // Pinta el fondo del lienzo de blanco
 }
 
-function draw() {
-  walker.step();
-  walker.show();
+function draw() { // Función que se ejecuta en bucle*, muchas veces por segundo
+  walker.step(); // Llama al método step() del objeto walker, que cambia su posición.
+  walker.show(); // Llama al método show() del objeto walker, que lo dibuja en pantalla.
 }
 
-class Walker {
-  constructor() {
-    this.x = width / 2;
-    this.y = height / 2;
+class Walker { // Define una clase llamada Walker.
+  constructor() { // Función especial que se ejecuta cuando se crea un nuevo Walker.
+    this.x = width / 2; // Inicializa la posición del caminante en el centro del canvas, variables de p5.js
+    this.y = height / 2; // coordenadas del caminante
   }
 
-  show() {
-    stroke(0);
-    point(this.x, this.y);
+  show() { // Método que se encarga de dibujar el caminante.
+    stroke(0); // Define el color del dibujo
+    point(this.x, this.y); // Dibuja un punto en la posición actual del caminante.
   }
 
-  step() {
-    const choice = floor(random(4));
-    if (choice == 0) {
+  step() { // Método que hace que el caminante se mueva.
+    const choice = floor(random(4)); // Genera un número aleatorio entero entre 0 y 3: random(4) → número aleatorio entre 0 y 3.999… / floor() → lo redondea hacia abajo
+    if (choice == 0) { // Si el número es 0, el caminante se mueve 1 píxel a la derecha.
       this.x++;
-    } else if (choice == 1) {
+    } else if (choice == 1) { // Si es 1, se mueve 1 píxel a la izquierda.
       this.x--;
-    } else if (choice == 2) {
+    } else if (choice == 2)  // Si es 2, se mueve 1 píxel hacia abajo.
       this.y++;
-    } else {
+    } else { // Si es 3, se mueve 1 píxel hacia arriba.
       this.y--;
     }
   }
@@ -230,6 +230,7 @@ https://editor.p5js.org/Nikeal/sketches/ZzKCG_M8A
 
 
 ## Bitácora de reflexión
+
 
 
 

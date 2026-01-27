@@ -298,6 +298,7 @@ Buscaba presentra a un conjunto de entidades "vivas" que se desplazan suavemente
 
 2. Copia el código en tu bitácora.
 
+```
 let walkers = [];
 let maxWalkers = 80;
 
@@ -373,7 +374,8 @@ class Walker {
     point(this.x, this.y);
   }
 }
-   
+```
+
 4. Coloca en enlace a tu sketch en p5.js en tu bitácora.
 
 https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
@@ -387,6 +389,7 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 
 
 ## Bitácora de reflexión
+
 
 
 

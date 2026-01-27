@@ -279,6 +279,7 @@ https://editor.p5js.org/Nikeal/sketches/mxH5_FalK
 
 <img width="634" height="219" alt="image" src="https://github.com/user-attachments/assets/79c6162a-2ed9-4f16-af37-e728a326a770" />
 
+## Bitácora de aplicación 
 
 ### Actividad 7
 
@@ -384,11 +385,9 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 
 <img width="635" height="236" alt="image" src="https://github.com/user-attachments/assets/82f77de7-53d8-4b70-86c9-85ab2d783957" />
 
-## Bitácora de aplicación 
-
-
 
 ## Bitácora de reflexión
+
 
 
 

@@ -397,10 +397,10 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
    
 5. Selecciona una captura de pantalla de tu sketch y colócala en tu bitácora.
 
-<img width="635" height="236" alt="image" src="https://github.com/user-attachments/assets/82f77de7-53d8-4b70-86c9-85ab2d783957" />
-
+<img width="666" height="242" alt="image" src="https://github.com/user-attachments/assets/09ac0e18-c48b-43c3-aa0d-c610c6b81d22" />
 
 ## Bitácora de reflexión
+
 
 
 

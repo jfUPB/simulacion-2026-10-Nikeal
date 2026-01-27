@@ -224,12 +224,170 @@ https://editor.p5js.org/Nikeal/sketches/ZzKCG_M8A
 
 <img width="633" height="238" alt="image" src="https://github.com/user-attachments/assets/db628a6f-8a2c-4868-9b80-58fb9351d015" />
 
+### Actividad 6
+
+*Ruido Perlin*
+
+1. Crea un nuevo sketch en p5.js donde los visualices. 
+
+2. Explica el concepto qué resultados esberabas obtener.
+
+- En lugar de usar el ruido Perlin solo para mover un punto en el eje X, voy a verlo como una onda orgánica que se mueve de forma natural y suave a lo largo del tiempo como un conjunto de líneas verticales donde la altura de cada línea está controlada por ruido Perlin, esto crea una forma parecida a montañas u olas o un paisaje vivo.
+
+3.. Copia el código en tu bitácora.
+
+let t = 0;
+
+function setup() {
+  createCanvas(640, 240);
+  background(255);
+}
+
+function draw() {
+  background(255);
+  stroke(0);
+  noFill();
+
+  beginShape();
+  let xoff = 0;
+
+  for (let x = 0; x < width; x += 5) {
+    let y = noise(xoff, t);
+    y = map(y, 0, 1, height, 0);
+    vertex(x, y);
+    xoff += 0.02;
+  }
+
+  endShape();
+
+  t += 0.01;
+}
+
+Estoy usando el ruido perlin en el noise() que genera valores suaves y continuos entre 0 y 1 usando dos dimensiones:
+
+xoff → posición horizontal
+
+t → tiempo
+
+Esto me permite que de la forma horizontal sea suave y verticalmente cambie lentamente con el tiempo
+
+4. Coloca en enlace a tu sketch en p5.js en tu bitácora.
+
+https://editor.p5js.org/Nikeal/sketches/mxH5_FalK
+
+5. Selecciona una captura de pantalla de tu sketch y colócala en tu bitácora.
+
+<img width="634" height="219" alt="image" src="https://github.com/user-attachments/assets/79c6162a-2ed9-4f16-af37-e728a326a770" />
+
+
+### Actividad 7
+
+**Creación de obra generativa**
+
+Condiciones: 
+1. Usar al menos tres conceptos estudiados en esta unidad COMBINADOS de manera creativa y coherente.
+2. Tu obra de ser interactiva y generativa en tiempo real. Puedes usar el mouse, el teclado o cualquier otro sensor de entrada para interactuar con la obra.
+
+Entregable:
+1. Un texto donde expliques el concepto de obra generativa.
+
+- Una obra generativa es una pieza de arte que sigue un sistema de reglas programadas, donde el diseñador crea las bases o reglas del sistema por el cual se rige, en lugar de controlar directamente el resultado final. Esta obra se genera en tiempo real mediante procesos como la aleatoriedad, el ruido Perlin y la interacción con el usuario, haciendo que cada ejecución sea única. En este tipo de obras, el código funciona como un agente creativo que produce variaciones constantes dentro de un marco definido por el artista.
+
+- Concepto de la obra:
+Buscaba presentra a un conjunto de entidades "vivas" que se desplazan suavemente por el espacio, me inspire en los laboratorios de biologia, donde se veian bacterias en el microscopio. Cada partícula tiene un movimiento orgánico controlado por ruido Perlin, que trata de simular movimientos organicos. El usuario puede intervenir moviendo el mouse, lo que altera el comportamiento de las partículas y modifica la composición visual en tiempo real.
+
+2. Copia el código en tu bitácora.
+
+let walkers = [];
+let maxWalkers = 80;
+
+function setup() {
+  createCanvas(640, 240);
+  background(255);
+
+  // Crear criaturas iniciales
+  for (let i = 0; i < 50; i++) {
+    walkers.push(new Walker(random(width), random(height)));
+  }
+}
+
+function draw() {
+  background(255, 25);
+
+  // Actualizar criaturas
+  for (let w of walkers) {
+    w.step();
+    w.show();
+  }
+
+  // Ocasionalmente eliminar criaturas
+  if (random(1) < 0.01 && walkers.length > 20) {
+    walkers.splice(floor(random(walkers.length)), 1);
+  }
+
+  // Ocasionalmente crear nuevas criaturas
+  if (random(1) < 0.02 && walkers.length < maxWalkers) {
+    walkers.push(new Walker(random(width), random(height)));
+  }
+}
+
+class Walker {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.tx = random(1000);
+    this.ty = random(1000);
+    this.speed = random(0.5, 1.5);
+  }
+
+  step() {
+    // Movimiento orgánico base
+    let angle = noise(this.tx, this.ty) * TWO_PI * 2;
+    let vx = cos(angle) * this.speed;
+    let vy = sin(angle) * this.speed;
+
+    // Reacción de huida al mouse
+    let d = dist(this.x, this.y, mouseX, mouseY);
+    if (d < 120) {
+      let escapeAngle = atan2(this.y - mouseY, this.x - mouseX);
+      let force = map(d, 0, 120, 3, 0);
+      vx += cos(escapeAngle) * force;
+      vy += sin(escapeAngle) * force;
+    }
+
+    this.x += vx;
+    this.y += vy;
+
+    this.tx += 0.01;
+    this.ty += 0.01;
+
+    // Bordes envolventes (evita acumulación)
+    if (this.x > width) this.x = 0;
+    if (this.x < 0) this.x = width;
+    if (this.y > height) this.y = 0;
+    if (this.y < 0) this.y = height;
+  }
+
+  show() {
+    stroke(0);
+    point(this.x, this.y);
+  }
+}
+   
+4. Coloca en enlace a tu sketch en p5.js en tu bitácora.
+
+https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
+   
+5. Selecciona una captura de pantalla de tu sketch y colócala en tu bitácora.
+
+<img width="635" height="236" alt="image" src="https://github.com/user-attachments/assets/82f77de7-53d8-4b70-86c9-85ab2d783957" />
 
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 
 

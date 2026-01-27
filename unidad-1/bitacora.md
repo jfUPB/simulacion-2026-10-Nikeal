@@ -306,28 +306,25 @@ let maxWalkers = 80;
 function setup() {
   createCanvas(640, 240);
   background(255);
+  colorMode(HSB, 360, 100, 100, 100);
 
-  // Crear criaturas iniciales
   for (let i = 0; i < 50; i++) {
     walkers.push(new Walker(random(width), random(height)));
   }
 }
 
 function draw() {
-  background(255, 25);
+  background(0, 0, 100, 20);
 
-  // Actualizar criaturas
   for (let w of walkers) {
     w.step();
     w.show();
   }
 
-  // Ocasionalmente eliminar criaturas
   if (random(1) < 0.01 && walkers.length > 20) {
     walkers.splice(floor(random(walkers.length)), 1);
   }
 
-  // Ocasionalmente crear nuevas criaturas
   if (random(1) < 0.02 && walkers.length < maxWalkers) {
     walkers.push(new Walker(random(width), random(height)));
   }
@@ -337,18 +334,26 @@ class Walker {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+
     this.tx = random(1000);
     this.ty = random(1000);
+
     this.speed = random(0.5, 1.5);
+
+    // Tamaño del punto
+    this.size = random(2, 5);
+
+    // Color
+    this.hue = random(360);
+    this.sat = random(50, 100);
+    this.bri = random(60, 100);
   }
 
   step() {
-    // Movimiento orgánico base
     let angle = noise(this.tx, this.ty) * TWO_PI * 2;
     let vx = cos(angle) * this.speed;
     let vy = sin(angle) * this.speed;
 
-    // Reacción de huida al mouse
     let d = dist(this.x, this.y, mouseX, mouseY);
     if (d < 120) {
       let escapeAngle = atan2(this.y - mouseY, this.x - mouseX);
@@ -363,15 +368,24 @@ class Walker {
     this.tx += 0.01;
     this.ty += 0.01;
 
-    // Bordes envolventes (evita acumulación)
     if (this.x > width) this.x = 0;
     if (this.x < 0) this.x = width;
     if (this.y > height) this.y = 0;
     if (this.y < 0) this.y = height;
+
+    // Salto de Lévy en el color
+    if (random(1) < 0.01) {
+      this.hue = random(360);
+      this.sat = random(50, 100);
+      this.bri = random(60, 100);
+    } else {
+      this.hue = (this.hue + 0.2) % 360;
+    }
   }
 
   show() {
-    stroke(0);
+    strokeWeight(this.size);
+    stroke(this.hue, this.sat, this.bri, 80);
     point(this.x, this.y);
   }
 }
@@ -387,6 +401,7 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 
 
 ## Bitácora de reflexión
+
 
 
 

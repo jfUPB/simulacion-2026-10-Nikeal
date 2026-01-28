@@ -300,93 +300,91 @@ Buscaba presentra a un conjunto de entidades "vivas" que se desplazan suavemente
 2. Copia el código en tu bitácora.
 
 ```
-let walkers = [];
-let maxWalkers = 80;
+let walkers = []; // Variable Goblal
+let maxWalkers = 80; // Array que impone el # maximo de "criaturas" del sistema.
 
-function setup() {
-  createCanvas(640, 240);
-  background(255);
-  colorMode(HSB, 360, 100, 100, 100);
+function setup() { // Función que se ejecuta una sola vez al inicio.
+  createCanvas(640, 240); // Crea el canva
+  background(255); // Fondo blanco
+  colorMode(HSB, 360, 100, 100, 100); // Se usa modo HSB en vez del RGB para controlar el color de forma más orgánica.
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 50; i++) { // Crea 50 criaturas iniciales en posiciones aleatorias.
     walkers.push(new Walker(random(width), random(height)));
   }
 }
 
-function draw() {
-  background(0, 0, 100, 20);
+function draw() { // Función que se ejecuta continuamente en tiempo real.
+  background(0, 0, 100, 20); // Fondo semitransparente que deja el rastro del movimiento.
 
-  for (let w of walkers) {
+  for (let w of walkers) { // Cada criatura calcula su movimiento y se dibuja en pantalla
     w.step();
     w.show();
   }
 
-  if (random(1) < 0.01 && walkers.length > 20) {
+  if (random(1) < 0.01 && walkers.length > 20) {  // Ocasionalmente una criatura desaparece.
     walkers.splice(floor(random(walkers.length)), 1);
   }
 
-  if (random(1) < 0.02 && walkers.length < maxWalkers) {
-    walkers.push(new Walker(random(width), random(height)));
+  if (random(1) < 0.02 && walkers.length < maxWalkers) { // Ocasionalmente nace una nueva criatura.
+    walkers.push(new Walker(random(width), random(height))); 
   }
 }
 
-class Walker {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+class Walker {  // Define el comportamiento de cada criatura.
+  constructor(x, y) { // Se ejecuta cuando nace una criatura.
+    this.x = x; // Posición inicial.
+    this.y = y; // Posición inicial.
 
-    this.tx = random(1000);
-    this.ty = random(1000);
+    this.tx = random(1000); // Offsets del ruido Perlin (cada criatura es distinta).
+    this.ty = random(1000); // Offsets del ruido Perlin (cada criatura es distinta).
 
-    this.speed = random(0.5, 1.5);
+    this.speed = random(0.5, 1.5); // Velocidad individual.
+    this.size = random(2, 5); // Tamaño del punto.
 
-    // Tamaño del punto
-    this.size = random(2, 5);
-
-    // Color
+    // Color inicial aleatorio.
     this.hue = random(360);
     this.sat = random(50, 100);
     this.bri = random(60, 100);
   }
 
   step() {
-    let angle = noise(this.tx, this.ty) * TWO_PI * 2;
-    let vx = cos(angle) * this.speed;
-    let vy = sin(angle) * this.speed;
+    let angle = noise(this.tx, this.ty) * TWO_PI * 2; // Calcula una dirección usando ruido Perlin.
+    let vx = cos(angle) * this.speed; // Convierte el ángulo en movimiento.
+    let vy = sin(angle) * this.speed; // Convierte el ángulo en movimiento.
 
-    let d = dist(this.x, this.y, mouseX, mouseY);
-    if (d < 120) {
-      let escapeAngle = atan2(this.y - mouseY, this.x - mouseX);
-      let force = map(d, 0, 120, 3, 0);
-      vx += cos(escapeAngle) * force;
-      vy += sin(escapeAngle) * force;
+    let d = dist(this.x, this.y, mouseX, mouseY); // Calcula la distancia al cursor.
+    if (d < 120) { // Si el mouse está cerca.
+      let escapeAngle = atan2(this.y - mouseY, this.x - mouseX); // Calcula la dirección opuesta al mouse.
+      let force = map(d, 0, 120, 3, 0); // Mientras más cerca el mouse, más fuerte es la reaccion.
+      vx += cos(escapeAngle) * force; // La criatura huye
+      vy += sin(escapeAngle) * force; // La criatura huye
     }
 
-    this.x += vx;
-    this.y += vy;
+    this.x += vx; // Se mueve la criatura.
+    this.y += vy; // Se mueve la criatura.
 
-    this.tx += 0.01;
-    this.ty += 0.01;
+    this.tx += 0.01; // Avanza el tiempo del ruido Perlin.
+    this.ty += 0.01; // Avanza el tiempo del ruido Perlin.
 
-    if (this.x > width) this.x = 0;
+    if (this.x > width) this.x = 0; // Las criaturas reaparecen por el lado opuesto.
     if (this.x < 0) this.x = width;
-    if (this.y > height) this.y = 0;
-    if (this.y < 0) this.y = height;
+    if (this.y > height) this.y = 0; // Las criaturas reaparecen por el lado opuesto.
+    if (this.y < 0) this.y = height; 
 
     // Salto de Lévy en el color
-    if (random(1) < 0.01) {
-      this.hue = random(360);
-      this.sat = random(50, 100);
-      this.bri = random(60, 100);
-    } else {
+    if (random(1) < 0.01) { // Evento raro.
+      this.hue = random(360); // Cambio brusco de color.
+      this.sat = random(50, 100); // Cambio brusco de color.
+      this.bri = random(60, 100); // Cambio brusco de color.
+    } else { // Cambio suave la mayor parte del tiempo.
       this.hue = (this.hue + 0.2) % 360;
     }
   }
 
   show() {
-    strokeWeight(this.size);
-    stroke(this.hue, this.sat, this.bri, 80);
-    point(this.x, this.y);
+    strokeWeight(this.size); // Tamaño del punto.
+    stroke(this.hue, this.sat, this.bri, 80); // Color con transparencia.
+    point(this.x, this.y); // Dibuja la criatura.
   }
 }
 ```
@@ -400,6 +398,7 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 <img width="666" height="242" alt="image" src="https://github.com/user-attachments/assets/09ac0e18-c48b-43c3-aa0d-c610c6b81d22" />
 
 ## Bitácora de reflexión
+
 
 
 

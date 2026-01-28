@@ -301,7 +301,7 @@ Buscaba presentra a un conjunto de entidades "vivas" que se desplazan suavemente
 
 ```
 let walkers = []; // Variable Goblal
-let maxWalkers = 80; // Array que impone el # maximo de "criaturas" del sistema.
+let maxWalkers = 80; // Array que impone y almacena el # maximo de "criaturas" del sistema.
 
 function setup() { // Función que se ejecuta una sola vez al inicio.
   createCanvas(640, 240); // Crea el canva
@@ -310,19 +310,19 @@ function setup() { // Función que se ejecuta una sola vez al inicio.
 
   for (let i = 0; i < 50; i++) { // Crea 50 criaturas iniciales en posiciones aleatorias.
     walkers.push(new Walker(random(width), random(height)));
-  }
+  } // push agrega un nuevo elemento al final del arreglo
 }
 
 function draw() { // Función que se ejecuta continuamente en tiempo real.
   background(0, 0, 100, 20); // Fondo semitransparente que deja el rastro del movimiento.
 
-  for (let w of walkers) { // Cada criatura calcula su movimiento y se dibuja en pantalla
-    w.step();
-    w.show();
+  for (let w of walkers) { // Cada criatura calcula su movimiento y se dibuja en pantalla, la w representa una criatura distinta
+    w.step(); // llama al metodo step
+    w.show(); // llama al metodo show
   }
 
-  if (random(1) < 0.01 && walkers.length > 20) {  // Ocasionalmente una criatura desaparece.
-    walkers.splice(floor(random(walkers.length)), 1);
+  if (random(1) < 0.01 && walkers.length > 20) {  // Ocasionalmente una criatura desaparece. Random genera un número aleatorio entre 0 y 1 y 0.01 =1% && walkers.length es la cantidad actual de criaturas.
+    walkers.splice(floor(random(walkers.length)), 1); // # = walkers.lenght, genera un numero aleatorio y floor lo redondea, splice modifica walkers (primero argumento = posicion, 1 # a eliminar)
   }
 
   if (random(1) < 0.02 && walkers.length < maxWalkers) { // Ocasionalmente nace una nueva criatura.
@@ -398,6 +398,7 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 <img width="666" height="242" alt="image" src="https://github.com/user-attachments/assets/09ac0e18-c48b-43c3-aa0d-c610c6b81d22" />
 
 ## Bitácora de reflexión
+
 
 
 

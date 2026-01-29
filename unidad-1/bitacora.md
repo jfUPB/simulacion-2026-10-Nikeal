@@ -408,23 +408,36 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 
 1. Describe la diferencia fundamental entre la aleatoriedad generada por random() y la apariencia de aleatoriedad del Ruido Perlin (noise()). ¿En qué tipo de situación usarías cada una?
 
-- 
+- La diferencia entre el random() y noise() es que random() genera valores completamente independientes entre sí, completamente aleatorios, mientras que el ruido Perlin da valores que están relacionados con los anteriores; graficamente se ve el ruido Perlin como un movimiento mas suave mientras que el random puede dar picos o cambios bruscos en el movimiento.
+
+- Usaria el random() para obtener valores independientes y aleatorios, controlar la aparicion y desaparicion de objetos, y las condiciones iniciales de dichas particulas, donde quiero eventos inesperados o decisiones puntuales. En cambio, noise() lo usaria para el cambio en el tiempo del movimiento o apariencia, dado que su suavidez se puede interpretar como el movimiento natural de las cosas.
 
 2. Explica con tus palabras qué es una distribución de probabilidad. ¿Qué diferencia visual produce una caminata aleatoria con una distribución uniforme versus una con una distribución normal?
 
--
+- La distribución de probabilidad se refiere a como se reparten las posibilidades de que ocurra un determinado evento o valor dentro de un sistema.
+
+ - La distribución uniforme es cuando todos los valores posibles tienen la misma probabilidad de ocurrir.
+ - En la caminata aleatoria con distribución uniforme, los movimientos son más impredecibles y dispersos, sin una tendencia clara, lo que hace recorridos irregulares.
+
+- La distribución normal es cuando los valores cercanos al promedio son más probables que los extremos.
+- En una caminata con distribución normal los movimientos suelen ser pequeños y concentrados en una dirección promedio, con cambios grandes que son poco probables, creando un movimiento más controlado y natural.
 
 3. ¿Cuál es el papel de la aleatoriedad en el arte generativo? Menciona al menos dos funciones distintas que cumple
 
--
+- La aleatoriedad es muy importante porque genera variaciones y evita que se repitan circunstancias o eventos.
+
+- Una de las funciones que tiene es crear variedad, haciendo que cada ejecución de la obra sea única e irrepetible.
+- Otra función es quitarle el control al artista, haciendo que el sistema produzca resultados inesperados que enriquecen la obra, fuera de la intervencion del artista, el cual solo da los parametros por los que se rige la obra mas no conoce ni influye en su resultado final. Además, la aleatoriedad puede simular procesos naturales y contribuir a comportamientos emergentes dentro del sistema.
 
 4. Piensa en tu obra final (Actividad 07). Describe uno de los conceptos de aleatoriedad que usaste y explica por qué fue una elección adecuada para lograr el efecto que buscabas.
 
--
+- En mi obra utilicé la aleatoriedad para generar eventos raros, específicamente en los cambios abruptos de color de las criaturas. La mayor parte del tiempo, el color cambia de forma suave, pero ocasionalmente ocurre un salto cromático inesperado. Ademas de controlar la desaparicion y aparicion de las "criaturas" de forma completamente aleatorias cumpliendo el minimo para que no se vea un cambio extremo. A su vez, use el ruido de perlin para controlar el movimiento de la criatura, el cual fue la eleccion correcta, porque buscaba que tuvieran un movimiento natural como si fueran "gusanos" y me permitió mantener una coherencia visual general sin perder la sorpresa y naturalidad.
 
 5. ¿Qué es un “paseo” o “caminata” (walk) en el contexto de la simulación? ¿Qué característica particular tiene una caminata de tipo “Lévy flight”?
 
--
+- En el contexto de la simulación, una caminata es el proceso por el cual un objeto o entidad se desplaza paso a paso siguiendo reglas determinadas, generalmente influenciadas por la aleatoriedad.
+- La caminata de Lévy flight se caracteriza por combinar muchos movimientos cortos con pocos movimientos largos y extremos. Esta característica genera trayectorias impredecibles y es común en fenómenos naturales como el movimiento de animales o partículas. Por lo que su diferencia con una caminata uniforme, es que Lévy flight introduce eventos extremos que alteran el patrón general.
+
 
 
 

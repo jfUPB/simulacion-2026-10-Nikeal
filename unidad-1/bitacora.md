@@ -384,7 +384,7 @@ class Walker {  // Define el comportamiento de cada criatura.
       this.sat = random(50, 100); // Cambio aleatorio de color.
       this.bri = random(60, 100); // Cambio aleatorio de color.
     } else { // Cambio suave la mayor parte del tiempo
-      this.hue = (this.hue + 0.2) % 360; // El tono aumenta muy lentamente, % 360 evita que el valor se salga del rango
+      this.hue = (this.hue + 0.2) % 360; // El tono aumenta muy lentamente, % 360 evita que el valor se salga del rango, operador % devuelve el resto de una división
     }
   }
 
@@ -405,6 +405,7 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 <img width="666" height="242" alt="image" src="https://github.com/user-attachments/assets/09ac0e18-c48b-43c3-aa0d-c610c6b81d22" />
 
 ## Bitácora de reflexión
+
 
 
 

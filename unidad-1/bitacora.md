@@ -308,7 +308,7 @@ function setup() { // Función que se ejecuta una sola vez al inicio.
   background(255); // Fondo blanco
   colorMode(HSB, 360, 100, 100, 100); // Se usa modo HSB en vez del RGB para controlar el color de forma más orgánica.
 
-  for (let i = 0; i < 50; i++) { // Crea 50 criaturas iniciales en posiciones aleatorias.
+  for (let i = 0; i < 50; i++) { // Crea 50 criaturas iniciales en posiciones aleatorias, for = ciclo
     walkers.push(new Walker(random(width), random(height)));
   } // push agrega un nuevo elemento al final del arreglo
 }
@@ -321,7 +321,7 @@ function draw() { // Función que se ejecuta continuamente en tiempo real.
     w.show(); // llama al metodo show
   }
 
-  if (random(1) < 0.01 && walkers.length > 20) {  // Ocasionalmente una criatura desaparece. Random genera un número aleatorio entre 0 y 1 y 0.01 =1% && walkers.length es la cantidad actual de criaturas.
+  if (random(1) < 0.01 && walkers.length > 20) {  // Ocasionalmente una criatura desaparece. Random genera un número aleatorio entre 0 y 1 && walkers.length es la cantidad actual de criaturas.
     walkers.splice(floor(random(walkers.length)), 1); // # = walkers.lenght, genera un numero aleatorio y floor lo redondea, splice modifica walkers (primero argumento = posicion, 1 # a eliminar)
   }
 
@@ -348,10 +348,10 @@ class Walker {  // Define el comportamiento de cada criatura.
   }
 
   step() { // define el método que controla el comportamiento
-    let angle = noise(this.tx, this.ty) * TWO_PI * 2; // Calcula una dirección usando ruido Perlin, noise(this.tx, this.ty) devuelve un valor suave entre 0 y 1, TWO_PI = 360
+    let angle = noise(this.tx, this.ty) * TWO_PI * 2; // Calcula una dirección usando ruido Perlin, noise(this.tx, this.ty) devuelve un valor suave entre 0 y 1
     let vx = cos(angle) * this.speed; // Convierte el ángulo en movimiento. 
     let vy = sin(angle) * this.speed; // Convierte el ángulo en movimiento.
-    // cos y sin convierten el ángulo en movimiento, this.speed controla la magnitud del desplazamiento
+    // This.speed controla la magnitud del desplazamiento
 
     let d = dist(this.x, this.y, mouseX, mouseY); // Calcula la distancia al cursor.
     if (d < 120) { // Si el mouse está cerca, zona de influencia
@@ -405,6 +405,7 @@ https://editor.p5js.org/Nikeal/sketches/1zTYVG7ku
 <img width="666" height="242" alt="image" src="https://github.com/user-attachments/assets/09ac0e18-c48b-43c3-aa0d-c610c6b81d22" />
 
 ## Bitácora de reflexión
+
 
 
 

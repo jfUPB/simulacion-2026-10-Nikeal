@@ -191,11 +191,23 @@ Ambos métodos son fundamentales para:
 - evitar movimientos extremos
 - mantener estabilidad en sistemas de movimiento
 
+### Actividad 6
+
+1. El código que genera el resultado que te pedí.
+
+
+
+2. ¿Cómo funciona lerp() y lerpColor().
+
+
+
+3. ¿Cómo se dibuja una flecha usando drawArrow()?
 
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 

@@ -37,6 +37,7 @@ Estos métodos saben cómo operar correctamente sobre las componentes internas (
   
 2. Escribe el código que utilizaste para resolver el ejercicio:
 
+```
 let walker;
 
 function setup() {
@@ -80,6 +81,115 @@ class Walker {
     point(this.position.x, this.position.y);
   }
 }
+```
+
+### Actividad 4
+
+1. ¿Qué resultado esperas obtener en el programa anterior?
+
+- Espero que el vector position cambie sus valores después de llamar a la función playingVector(position). Aunque la función recibe el vector como parámetro, al modificar sus componentes (x e y), estos cambios deberían reflejarse fuera de la función.
+
+2. ¿Qué resultado obtuviste? 
+Antes de llamar a la función:
+
+[6, 9]
+
+
+Después de llamar a la función playingVector(position):
+
+[20, 30]
+
+
+3. Recuerda los conceptos de paso por valor y paso por referencia en programación.
+
+Paso por valor:
+Se pasa una copia del dato. Los cambios dentro de la función no afectan a la variable original.
+
+Paso por referencia:
+Se pasa una referencia al objeto original. Los cambios dentro de la función sí afectan al objeto fuera de la función.
+
+4. ¿Qué tipo de paso se está realizando en el código?
+
+En este código se está realizando un paso por referencia.
+
+Esto ocurre porque los vectores (p5.Vector) son objetos, y cuando se pasan como parámetros a una función, no se copia el vector, sino que se pasa una referencia al mismo objeto en memoria.
+
+Por eso, al modificar v.x y v.y dentro de la función, también se modifica position.
+
+5. ¿Qué aprendiste?
+
+Aprendí que los vectores en p5.js se comportan como objetos y se pasan por referencia. Esto significa que al enviarlos a una función, cualquier modificación afecta directamente al vector original. Este comportamiento es muy importante, ya que permite modificar posiciones, velocidades o fuerzas desde funciones externas, pero también requiere cuidado para evitar cambios no deseados en sistemas complejos.
+
+### Actividad 5
+
+1. ¿Para qué sirve el método mag()? Nota que hay otro método llamado magSq(). ¿Cuál es la diferencia entre ambos? ¿Cuál es más eficiente?
+
+- El método mag() sirve para obtener la magnitud o longitud de un vector, es decir, qué tan largo es. Matemáticamente, corresponde a la distancia desde el origen hasta el punto definido por el vector.
+- El método magSq() devuelve el cuadrado de la magnitud. La diferencia es que mag() calcula una raíz cuadrada, mientras que magSq() no.
+- magSq() es más eficiente computacionalmente, por lo que se usa cuando solo se necesita comparar longitudes relativas y no el valor exacto de la magnitud.
+
+2. ¿Para qué sirve el método normalize()?
+
+- El método normalize() convierte un vector en un vector unitario, es decir, un vector con la misma dirección pero con magnitud igual a 1. Esto es útil cuando se quiere trabajar solo con la dirección del vector sin que su longitud influya, por ejemplo al definir fuerzas, direcciones de movimiento o vectores de orientación.
+
+3. Te encuentras con un periodista en la calle y te pregunta ¿Para qué sirve el método dot()? ¿Qué le responderías en un frase?
+
+- El método dot() sirve para medir qué tan alineados están dos vectores entre sí.
+
+4. El método dot() tiene una versión estática y una de instancia. ¿Cuál es la diferencia entre ambas?
+
+- Versión de instancia:
+Se llama desde un vector existente.
+
+v1.dot(v2);
+
+
+Calcula el producto punto entre v1 y v2.
+
+Versión estática:
+Se llama desde la clase p5.Vector.
+
+p5.Vector.dot(v1, v2);
+
+
+Hace exactamente lo mismo, pero sin depender de un vector específico como contexto.
+
+5. Ahora el mismo periodista curioso de antes te pregunta si le puedes dar una intuición geométrica acerca del producto cruz. Entonces te pregunta ¿Cuál es la interpretación geométrica del producto cruz de dos vectores? Tu respuesta debe incluir qué pasa con la orientación y la magnitud del vector resultante.
+
+El producto cruz de dos vectores genera un nuevo vector perpendicular a los dos vectores originales.
+
+Orientación:
+La dirección del vector resultante sigue la regla de la mano derecha, lo que significa que su orientación depende del orden de los vectores.
+
+Magnitud:
+La magnitud del vector resultante es proporcional al área del paralelogramo formado por los dos vectores.
+Si los vectores son paralelos, el producto cruz es cero.
+
+Geométricamente, el producto cruz mide cuánto “se separan” dos vectores en el espacio.
+
+6. ¿Para que te puede servir el método dist()?
+
+El método dist() sirve para calcular la distancia entre dos puntos o vectores.
+
+Es especialmente útil para:
+- detectar cercanía entre objetos
+- colisiones simples
+- zonas de influencia
+- interacción con el mouse
+
+7. ¿Para qué sirven los métodos normalize() y limit()?
+
+- normalize()
+Se usa para mantener solo la dirección del vector, con magnitud fija en 1.
+
+- limit()
+Se usa para limitar la magnitud máxima de un vector sin cambiar su dirección.
+
+Ambos métodos son fundamentales para:
+
+- controlar velocidad
+- evitar movimientos extremos
+- mantener estabilidad en sistemas de movimiento
 
 
 ## Bitácora de aplicación 
@@ -87,4 +197,5 @@ class Walker {
 
 
 ## Bitácora de reflexión
+
 

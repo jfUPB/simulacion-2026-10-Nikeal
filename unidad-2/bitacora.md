@@ -195,19 +195,109 @@ Ambos métodos son fundamentales para:
 
 1. El código que genera el resultado que te pedí.
 
+```
+let t = 0;
+let dir = 1;
 
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+
+  let origin = createVector(100, 300);
+
+  let v1 = createVector(250, 0);    // Vector rojo (horizontal)
+  let v2 = createVector(200, -250); // Vector verde (diagonal)
+
+  // Interpolación entre v1 y v2
+  let v3 = p5.Vector.lerp(v1, v2, t);
+
+  drawArrow(origin, v1, color(255, 0, 0));
+  drawArrow(origin, v2, color(0, 150, 0));
+  drawArrow(origin, v3, color(150, 0, 150));
+
+  // Animación del parámetro t
+  t += 0.01 * dir;
+  if (t > 1 || t < 0) {
+    dir *= -1;
+  }
+}
+
+function drawArrow(base, vec, myColor) {
+  push();
+  stroke(myColor);
+  strokeWeight(3);
+  fill(myColor);
+  translate(base.x, base.y);
+  line(0, 0, vec.x, vec.y);
+  rotate(vec.heading());
+  let arrowSize = 10;
+  translate(vec.mag() - arrowSize, 0);
+  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+  pop();
+}
+```
 
 2. ¿Cómo funciona lerp() y lerpColor().
 
+- El método lerp() realiza una interpolación lineal entre dos valores o vectores.
 
+En el caso de vectores:
+
+p5.Vector.lerp(v1, v2, t)
+
+
+v1 → vector inicial
+
+v2 → vector final
+
+t → valor entre 0 y 1
+
+Interpretación:
+
+t = 0 → resultado es v1
+
+t = 1 → resultado es v2
+
+t = 0.5 → punto exactamente a la mitad
+
+Geométricamente, lerp() devuelve un vector que se mueve sobre la línea que conecta ambos vectores.
+
+- lerpColor() funciona igual, pero con colores:
+
+lerpColor(colorA, colorB, t)
+
+Interpola gradualmente entre dos colores
 
 3. ¿Cómo se dibuja una flecha usando drawArrow()?
+El método drawArrow() dibuja una flecha combinando transformaciones geométricas:
+
+1. translate(base.x, base.y)
+Mueve el origen del sistema de coordenadas al punto de inicio del vector.
+
+2. line(0, 0, vec.x, vec.y)
+Dibuja el cuerpo de la flecha siguiendo el vector.
+
+3. rotate(vec.heading())
+Rota el sistema para que la punta apunte en la dirección del vector.
+
+4. vec.mag()
+Usa la magnitud del vector para colocar la punta al final.
+
+5. triangle(...)
+Dibuja la cabeza de la flecha.
+
+6. push() / pop()
+Aísla las transformaciones para no afectar otros dibujos.
 
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 
 

@@ -292,11 +292,102 @@ Dibuja la cabeza de la flecha.
 6. push() / pop()
 Aísla las transformaciones para no afectar otros dibujos.
 
+### Actividad 7
+
+1. ¿Cuál es el concepto del marco Motion 101 y cómo se interpreta geométricamente?
+
+El marco **Motion 101** es una forma estructurada de describir el movimiento usando **vectores**, basada en tres componentes fundamentales:
+
+* **Posición** → dónde está el objeto
+* **Velocidad** → hacia dónde y qué tan rápido se mueve
+* **Aceleración** → cómo cambia la velocidad
+
+Conceptualmente, Motion 101 establece que el movimiento ocurre en capas:
+la aceleración modifica la velocidad, y la velocidad modifica la posición.
+
+Geométricamente:
+
+* La **posición** es un punto en el espacio.
+* La **velocidad** es un vector que indica la dirección y magnitud del desplazamiento desde ese punto.
+* La **aceleración** es un vector que cambia la longitud y/o dirección del vector velocidad.
+
+Esto permite entender el movimiento como una **suma progresiva de vectores**, donde cada frame representa una integración en el tiempo.
+
+2. ¿Cómo se aplica Motion 101 en el ejemplo?
+
+En el ejemplo propuesto, Motion 101 se aplica de la siguiente manera:
+
+1. Se inicializan tres vectores:
+
+   * `position` representa la ubicación del objeto.
+   * `velocity` comienza en cero, indicando que el objeto parte en reposo.
+   * `acceleration` tiene un valor constante, lo que provoca un cambio continuo en la velocidad.
+
+2. En cada actualización (`update()`):
+
+   * La aceleración se suma a la velocidad, haciendo que esta aumente progresivamente.
+   * La velocidad se limita con `topSpeed` para evitar valores excesivos.
+   * La posición se actualiza sumando la velocidad.
+
+3. El resultado visual es un objeto que comienza moviéndose lentamente y acelera de forma gradual hasta alcanzar una velocidad máxima, describiendo una trayectoria influenciada por la dirección de la aceleración.
+
+Este ejemplo demuestra cómo el uso de aceleración produce un movimiento más natural que un desplazamiento constante, y cómo Motion 101 permite simular comportamientos físicos básicos sin necesidad de un motor de físicas.
+
+### Actividad 8
+
+1. Aceleración constante
+
+- Observaciones:
+
+* El objeto **aumenta su velocidad de manera uniforme**.
+* El movimiento comienza lento y se vuelve progresivamente más rápido.
+* La trayectoria es **predecible y estable**.
+* Si la aceleración apunta siempre en la misma dirección, el objeto puede salirse rápidamente de la pantalla.
+
+- Conclusión:
+
+Este tipo de aceleración produce un movimiento **controlado y realista**, similar a la gravedad o a un empuje continuo.
+Es ideal para entender la relación básica:
+
+> aceleración → velocidad → posición
+
+Aquí el “trickle-down effect” se observa con claridad.
+
+2. Aceleración aleatoria
+
+- Observaciones:
+
+* El movimiento es **errático e impredecible**.
+* La velocidad cambia constantemente en magnitud y dirección.
+* El objeto parece “temblar”, “vibrar” o moverse de forma caótica.
+* No hay una trayectoria clara ni repetible.
+
+- Conclusión:
+
+Aunque la aceleración sea caótica, el sistema sigue funcionando correctamente.
+Esto demuestra que **no importa si la aceleración es lógica o absurda**:
+el modelo físico sigue respondiendo.
+
+Aquí se rompe un poco la “regla” del libro, porque:
+
+* El movimiento deja de ser realista
+* Pero se vuelve **expresivo y útil para efectos visuales**
+
+3. Aceleración hacia el mouse
+
+- Observaciones:
+
+* El objeto **persigue el mouse** suavemente.
+* Cuanto más lejos está el mouse, **mayor es la aceleración**.
+* El movimiento parece **inteligente u orgánico**.
+* Si no se limita la velocidad, el objeto puede oscilar o “pasarse” del objetivo.
+
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 
 

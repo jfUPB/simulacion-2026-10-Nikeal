@@ -398,6 +398,8 @@ Esta obra es una exploración artística del movimiento como fenómeno vivo. Evo
 let agents = [];
 let total = 70;
 
+let traceMode = false; // false = presente, true = memoria
+
 function setup() {
   createCanvas(640, 400);
   colorMode(HSB, 360, 100, 100, 100);
@@ -405,15 +407,33 @@ function setup() {
   for (let i = 0; i < total; i++) {
     agents.push(new Agent());
   }
+
+  // Desactiva menú contextual para click derecho
+  document.oncontextmenu = () => false;
 }
 
 function draw() {
-  background(0, 0, 100, 18);
+  if (!traceMode) {
+    // Presente: se borra el fondo
+    background(0, 0, 100, 18);
+  }
+  // Memoria: no se borra el fondo
 
   for (let a of agents) {
     a.update();
     a.edges();
     a.show();
+  }
+}
+
+function mousePressed() {
+  if (mouseButton === LEFT) {
+    traceMode = true; // activar memoria
+  }
+
+  if (mouseButton === RIGHT) {
+    traceMode = false; // volver al presente
+    background(0, 0, 100); // limpiar
   }
 }
 
@@ -435,7 +455,7 @@ class Agent {
     this.hue = random(360);
   }
 
-  // Capítulo 2: fuerzas
+  // Capítulo 2: aplicar fuerzas
   applyForce(force) {
     let f = p5.Vector.div(force, this.mass);
     this.acceleration.add(f);
@@ -444,7 +464,7 @@ class Agent {
   update() {
     this.prev = this.position.copy();
 
-    // Fuerza 1: atracción / repulsión al mouse
+    // 🔹 Fuerza 1: interacción con el mouse (atracción / repulsión)
     let mouse = createVector(mouseX, mouseY);
     let dir = p5.Vector.sub(mouse, this.position);
     let d = dir.mag();
@@ -453,33 +473,35 @@ class Agent {
       dir.normalize();
       let strength = map(d, 0, 180, 0.6, 0);
 
-      // Click invierte la fuerza (decisión interactiva)
-      if (mouseIsPressed) strength *= -1;
+      // Click izquierdo: atracción intensa
+      if (mouseIsPressed && mouseButton === LEFT) strength *= 2;
+
+      // Click derecho: repulsión intensa
+      if (mouseIsPressed && mouseButton === RIGHT) strength *= -2;
 
       dir.mult(strength);
       this.applyForce(dir);
     }
 
-    // Fuerza 2: campo de flujo (Perlin)
+    // 🔹 Fuerza 2: campo de flujo (ruido Perlin)
     let angle = noise(this.tx, this.ty) * TWO_PI * 2;
     let flow = p5.Vector.fromAngle(angle);
     flow.mult(0.15);
     this.applyForce(flow);
 
-    // Fuerza 3: fricción (estabiliza)
+    // 🔹 Fuerza 3: fricción
     let friction = this.velocity.copy();
     friction.mult(-1);
     friction.normalize();
     friction.mult(0.03);
     this.applyForce(friction);
 
-    // Evento raro (mutación)
+    // 🔹 Evento raro (mutación)
     if (random(1) < 0.008) {
       let burst = p5.Vector.random2D();
       burst.mult(random(1, 3));
       this.applyForce(burst);
 
-      // Mutación visual
       this.hue = random(360);
       this.mass = random(0.6, 2);
       this.size = this.mass * 3;
@@ -507,8 +529,8 @@ class Agent {
   }
 
   show() {
-    // Trazo de dirección
-    stroke(this.hue, 60, 80, 60);
+    // Traza (memoria)
+    stroke(this.hue, 60, 80, traceMode ? 30 : 70);
     strokeWeight(1);
     line(this.prev.x, this.prev.y, this.position.x, this.position.y);
 
@@ -529,6 +551,7 @@ Selecciona capturas de pantalla representativas de tu pieza de arte generativa.
 
 
 ## Bitácora de reflexión
+
 
 
 

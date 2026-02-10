@@ -384,6 +384,16 @@ Aquí se rompe un poco la “regla” del libro, porque:
 
 ## Bitácora de aplicación 
 
+1. Describe el concepto de tu obra generativa. Explica el concepto de tu obra generativa, qué regla aplicaste para la aceleración y por qué, si fue una decisión de diseño, o qué te evoca, si fue una exploración artística.
+
+La obra es un campo sensible en movimiento, habitado por entidades que no siguen trayectorias predeterminadas, sino que responden a fuerzas que las atraviesan. El movimiento no nace de una instrucción directa, sino de un equilibrio inestable entre atracción, deriva y ruptura. La aceleración es la que decide el desplazamiento donde a partir de pequeñas fuerzas (algunas constantes y otras no) emergen trayectorias fluidas, a veces armónicas o a veces caóticas.
+
+La interacción del usuario no impone un control, sino que actúa como una presencia que altera el campo. El mouse introduce una tensión local que atrae o repele a los agentes, como si el espacio reaccionara a un gesto externo. Sin embargo, el sistema conserva su autonomía, resistiéndose a ser completamente dominado.
+
+Esta obra es una exploración artística del movimiento como fenómeno vivo. Evoca organismos que se adaptan, memorias de desplazamientos pasados y fuerzas que nunca se muestran, pero siempre se sienten. No hay una forma final: solo un flujo continuo donde reglas simples, aplicadas a la aceleración, generan complejidad, ritmo y transformación constante.
+
+2.El código de la aplicación.
+
 ```
 let agents = [];
 let total = 70;
@@ -510,8 +520,16 @@ class Agent {
 }
 ```
 
+3. Un enlace al proyecto en el editor de p5.js.
+
+https://editor.p5js.org/Nikeal/sketches/3M2w5NbBa
+
+Selecciona capturas de pantalla representativas de tu pieza de arte generativa.
+
+
 
 ## Bitácora de reflexión
+
 
 
 

@@ -384,9 +384,135 @@ Aquí se rompe un poco la “regla” del libro, porque:
 
 ## Bitácora de aplicación 
 
+```
+let agents = [];
+let total = 70;
+
+function setup() {
+  createCanvas(640, 400);
+  colorMode(HSB, 360, 100, 100, 100);
+
+  for (let i = 0; i < total; i++) {
+    agents.push(new Agent());
+  }
+}
+
+function draw() {
+  background(0, 0, 100, 18);
+
+  for (let a of agents) {
+    a.update();
+    a.edges();
+    a.show();
+  }
+}
+
+class Agent {
+  constructor() {
+    this.position = createVector(random(width), random(height));
+    this.prev = this.position.copy();
+
+    this.velocity = p5.Vector.random2D();
+    this.acceleration = createVector(0, 0);
+
+    this.mass = random(0.6, 2);
+    this.maxSpeed = random(2, 4);
+
+    this.tx = random(1000);
+    this.ty = random(1000);
+
+    this.size = this.mass * 3;
+    this.hue = random(360);
+  }
+
+  // Capítulo 2: fuerzas
+  applyForce(force) {
+    let f = p5.Vector.div(force, this.mass);
+    this.acceleration.add(f);
+  }
+
+  update() {
+    this.prev = this.position.copy();
+
+    // Fuerza 1: atracción / repulsión al mouse
+    let mouse = createVector(mouseX, mouseY);
+    let dir = p5.Vector.sub(mouse, this.position);
+    let d = dir.mag();
+
+    if (d < 180) {
+      dir.normalize();
+      let strength = map(d, 0, 180, 0.6, 0);
+
+      // Click invierte la fuerza (decisión interactiva)
+      if (mouseIsPressed) strength *= -1;
+
+      dir.mult(strength);
+      this.applyForce(dir);
+    }
+
+    // Fuerza 2: campo de flujo (Perlin)
+    let angle = noise(this.tx, this.ty) * TWO_PI * 2;
+    let flow = p5.Vector.fromAngle(angle);
+    flow.mult(0.15);
+    this.applyForce(flow);
+
+    // Fuerza 3: fricción (estabiliza)
+    let friction = this.velocity.copy();
+    friction.mult(-1);
+    friction.normalize();
+    friction.mult(0.03);
+    this.applyForce(friction);
+
+    // Evento raro (mutación)
+    if (random(1) < 0.008) {
+      let burst = p5.Vector.random2D();
+      burst.mult(random(1, 3));
+      this.applyForce(burst);
+
+      // Mutación visual
+      this.hue = random(360);
+      this.mass = random(0.6, 2);
+      this.size = this.mass * 3;
+    }
+
+    // Motion 101
+    this.velocity.add(this.acceleration);
+    this.velocity.limit(this.maxSpeed);
+    this.position.add(this.velocity);
+
+    // Reset aceleración (Cap. 2)
+    this.acceleration.mult(0);
+
+    this.tx += 0.01;
+    this.ty += 0.01;
+  }
+
+  edges() {
+    if (this.position.x > width) this.position.x = 0;
+    if (this.position.x < 0) this.position.x = width;
+    if (this.position.y > height) this.position.y = 0;
+    if (this.position.y < 0) this.position.y = height;
+
+    this.prev = this.position.copy();
+  }
+
+  show() {
+    // Trazo de dirección
+    stroke(this.hue, 60, 80, 60);
+    strokeWeight(1);
+    line(this.prev.x, this.prev.y, this.position.x, this.position.y);
+
+    // Núcleo
+    stroke(this.hue, 80, 80, 90);
+    strokeWeight(this.size);
+    point(this.position.x, this.position.y);
+  }
+}
+```
 
 
 ## Bitácora de reflexión
+
 
 
 

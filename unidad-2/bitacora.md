@@ -469,7 +469,7 @@ class Agent {
   update() {
     this.prev = this.position.copy();
 
-    // 🔹 Fuerza 1: interacción con el mouse (atracción / repulsión)
+    // Fuerza 1: interacción con el mouse (atracción / repulsión)
     let mouse = createVector(mouseX, mouseY);
     let dir = p5.Vector.sub(mouse, this.position);
     let d = dir.mag();
@@ -488,20 +488,20 @@ class Agent {
       this.applyForce(dir);
     }
 
-    // 🔹 Fuerza 2: campo de flujo (ruido Perlin)
+    // Fuerza 2: campo de flujo (ruido Perlin)
     let angle = noise(this.tx, this.ty) * TWO_PI * 2;
     let flow = p5.Vector.fromAngle(angle);
     flow.mult(0.15);
     this.applyForce(flow);
 
-    // 🔹 Fuerza 3: fricción
+    // Fuerza 3: fricción
     let friction = this.velocity.copy();
     friction.mult(-1);
     friction.normalize();
     friction.mult(0.03);
     this.applyForce(friction);
 
-    // 🔹 Evento raro (mutación)
+    // Evento raro (mutación)
     if (random(1) < 0.008) {
       let burst = p5.Vector.random2D();
       burst.mult(random(1, 3));
@@ -557,6 +557,7 @@ https://editor.p5js.org/Nikeal/sketches/3M2w5NbBa
 <img width="621" height="390" alt="image" src="https://github.com/user-attachments/assets/907186bb-7f08-45bf-a38d-9f5905806c05" />
 
 ## Bitácora de reflexión
+
 
 
 

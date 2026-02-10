@@ -400,83 +400,87 @@ Esta obra es una exploración artística del movimiento como fenómeno vivo. Evo
 - Click derecho → se limpia el espacio
 
 ```
-let agents = [];
-let total = 70;
+let agents = []; // Crea un arreglo vacío donde se almacenarán todos los agentes del sistema
+let total = 70; // Define cuántos agentes tendrá el sistema
 
-let traceMode = false; // false = presente, true = memoria
+let traceMode = false; // Variable que controla el modo visual, false = limpia, true = memoria
 
-function setup() {
-  createCanvas(640, 400);
-  colorMode(HSB, 360, 100, 100, 100);
+function setup() { // Función que se ejecuta una sola vez al iniciar el sketch
+  createCanvas(640, 400); // lienzo donde se dibuja
+  colorMode(HSB, 360, 100, 100, 100); // Cambia el sistema de color a HSB, facilita variaciones cromáticas orgánicas
 
   for (let i = 0; i < total; i++) {
-    agents.push(new Agent());
+    agents.push(new Agent()); // Crea total agentes y los guarda en el arreglo agents.
   }
 
-  // Desactiva menú contextual para click derecho
+  // Desactiva menú contextual del navegador para que el click derecho se use como interacción.
   document.oncontextmenu = () => false;
 }
 
-function draw() {
+function draw() { // Función que se ejecuta en cada frame
   if (!traceMode) {
-    // Presente: se borra el fondo
-    background(0, 0, 100, 18);
+    background(0, 0, 100, 18); // Si no estamos en modo memoria: se limpia el fondo parcialmente, queda una ligera estela, pero se borra el trazo
   }
+  
   // Memoria: no se borra el fondo
-
   for (let a of agents) {
     a.update();
     a.edges();
     a.show();
+  } // Recorre todos los agentes y calcula su movimiento (update), gestiona los bordes (edges) y los dibuja (show)
+}
+
+function mousePressed() { // Función que se ejecuta cada vez que se presiona un botón del mouse
+  if (mouseButton === LEFT) { // Click izquierdo
+    traceMode = true; // activa la memoria y las trayectorias comienzan a acumularse
+  }
+
+  if (mouseButton === RIGHT) { // Click derecho
+    traceMode = false; // Modo limpio
+    background(0, 0, 100); // limpia completamente el lienzo
   }
 }
 
-function mousePressed() {
-  if (mouseButton === LEFT) {
-    traceMode = true; // activar memoria
-  }
+class Agent { // Define el comportamiento y las propiedades de cada agente del sistema
+  constructor() { // Se ejecuta cuando nace un agente
+    this.position = createVector(random(width), random(height)); // Posición inicial aleatoria usando un vector
+    this.prev = this.position.copy(); // Guarda la posición anterior para poder dibujar la trayectoria
 
-  if (mouseButton === RIGHT) {
-    traceMode = false; // volver al presente
-    background(0, 0, 100); // limpiar
-  }
-}
+    this.velocity = p5.Vector.random2D(); // Velocidad inicial con dirección aleatoria y magnitud 1
+    this.acceleration = createVector(0, 0); // Aceleración inicial en cero
 
-class Agent {
-  constructor() {
-    this.position = createVector(random(width), random(height));
-    this.prev = this.position.copy();
+    this.mass = random(0.6, 2); // Masa del agente, usada para modular el efecto de las fuerzas
+    this.maxSpeed = random(2, 4); // Velocidad máxima permitida
 
-    this.velocity = p5.Vector.random2D();
-    this.acceleration = createVector(0, 0);
-
-    this.mass = random(0.6, 2);
-    this.maxSpeed = random(2, 4);
-
-    this.tx = random(1000);
+    this.tx = random(1000); 
     this.ty = random(1000);
+    // Offsets para el ruido Perlin, hacen que cada agente tenga un flujo distinto
 
-    this.size = this.mass * 3;
-    this.hue = random(360);
+    this.size = this.mass * 3; // El tamaño visual depende de la masa
+    this.hue = random(360); // Color inicial aleatorio
   }
 
-  // Capítulo 2: aplicar fuerzas
-  applyForce(force) {
-    let f = p5.Vector.div(force, this.mass);
-    this.acceleration.add(f);
+  // Capítulo 2
+  applyForce(force) { // Método que aplica una fuerza al agente
+    let f = p5.Vector.div(force, this.mass); // La fuerza se divide por la masa
+    this.acceleration.add(f); // La fuerza se acumula en la aceleración
   }
 
   update() {
     this.prev = this.position.copy();
+    // Guarda la posición anterior antes de moverse
 
     // Fuerza 1: interacción con el mouse (atracción / repulsión)
+    
     let mouse = createVector(mouseX, mouseY);
     let dir = p5.Vector.sub(mouse, this.position);
-    let d = dir.mag();
+    // Vector que apunta del agente hacia el mouse
+    
+    let d = dir.mag(); // Distancia entre agente y mouse
 
-    if (d < 180) {
-      dir.normalize();
-      let strength = map(d, 0, 180, 0.6, 0);
+    if (d < 180) { // La fuerza solo actúa si el mouse está cerca
+      dir.normalize(); // Se convierte en un vector unitario (solo dirección)
+      let strength = map(d, 0, 180, 0.6, 0); // La fuerza es más intensa cuanto más cerca está el mouse
 
       // Click izquierdo: atracción intensa
       if (mouseIsPressed && mouseButton === LEFT) strength *= 2;
@@ -486,64 +490,76 @@ class Agent {
 
       dir.mult(strength);
       this.applyForce(dir);
+      // Se escala la fuerza y se aplica.
     }
 
     // Fuerza 2: campo de flujo (ruido Perlin)
-    let angle = noise(this.tx, this.ty) * TWO_PI * 2;
+    
+    let angle = noise(this.tx, this.ty) * TWO_PI * 2; // Convierte el ruido Perlin en un ángulo suave
+    
     let flow = p5.Vector.fromAngle(angle);
     flow.mult(0.15);
     this.applyForce(flow);
+    // Crea una fuerza direccional orgánica
 
     // Fuerza 3: fricción
+    
     let friction = this.velocity.copy();
     friction.mult(-1);
+    // Fuerza opuesta a la velocidad
+    
     friction.normalize();
     friction.mult(0.03);
     this.applyForce(friction);
+    // Se controla su intensidad
 
     // Evento raro (mutación)
-    if (random(1) < 0.008) {
+    if (random(1) < 0.008) { // Probabilidad baja → evento poco frecuente
       let burst = p5.Vector.random2D();
       burst.mult(random(1, 3));
+      // Fuerza fuerte y aleatoria
+      
       this.applyForce(burst);
 
       this.hue = random(360);
       this.mass = random(0.6, 2);
       this.size = this.mass * 3;
-    }
+    } // Mutación visual y física
 
     // Motion 101
-    this.velocity.add(this.acceleration);
-    this.velocity.limit(this.maxSpeed);
-    this.position.add(this.velocity);
+    this.velocity.add(this.acceleration); // La aceleración modifica la velocidad
+    this.velocity.limit(this.maxSpeed); // Se limita la velocidad máxima
+    this.position.add(this.velocity); // La velocidad modifica la posición
 
-    // Reset aceleración (Cap. 2)
-    this.acceleration.mult(0);
+    this.acceleration.mult(0); // Se reinicia la aceleración
 
     this.tx += 0.01;
     this.ty += 0.01;
-  }
+  } // Avanza el ruido Perlin en el tiempo
 
-  edges() {
+  edges() { // Permite que los agentes reaparezcan por el lado opuesto
     if (this.position.x > width) this.position.x = 0;
     if (this.position.x < 0) this.position.x = width;
     if (this.position.y > height) this.position.y = 0;
     if (this.position.y < 0) this.position.y = height;
 
     this.prev = this.position.copy();
-  }
+  } // Evita líneas largas al cruzar bordes
 
   show() {
     // Traza (memoria)
     stroke(this.hue, 60, 80, traceMode ? 30 : 70);
+    // El trazo es más transparente en modo memoria
+    
     strokeWeight(1);
     line(this.prev.x, this.prev.y, this.position.x, this.position.y);
+    // Dibuja la trayectoria
 
     // Núcleo
     stroke(this.hue, 80, 80, 90);
     strokeWeight(this.size);
     point(this.position.x, this.position.y);
-  }
+  } // Dibuja el núcleo del agente
 }
 ```
 
@@ -557,6 +573,7 @@ https://editor.p5js.org/Nikeal/sketches/3M2w5NbBa
 <img width="621" height="390" alt="image" src="https://github.com/user-attachments/assets/907186bb-7f08-45bf-a38d-9f5905806c05" />
 
 ## Bitácora de reflexión
+
 
 
 

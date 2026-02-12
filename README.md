@@ -24,3 +24,4 @@ entrada que hagas el siguiente formato:
 ### título de la entrada
 ```
 
+Pagina Curso: https://juanferfranco.github.io/simulacion-2026-10/

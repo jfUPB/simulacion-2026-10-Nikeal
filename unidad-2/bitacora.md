@@ -574,6 +574,138 @@ https://editor.p5js.org/Nikeal/sketches/3M2w5NbBa
 
 ## Bitácora de reflexión
 
+- Describe el concepto de tu obra generativa. Explica el concepto de tu obra generativa.
+
+Lo que queria con la obra es explorar la idea de agrupación emergente inspirada en Clusters de Jeffrey Ventrella y en los sistemas autoorganizados. En lugar de diseñar formas específicas, el sistema permite que las estructuras aparezcan como resultado de las interacciones entre las particulas. Buscaba que cada particula al unirse con otra se creara una armonia o figura, por lo que las formas emergen desde reglas simples repetidas muchas veces, siguiendo la lógica de Tarbell: la complejidad surge del comportamiento colectivo, donde se mueven siguiendo el esquema de Motion 101 (su movimiento no está definido directamente) y está inspirado en el. Sin embargo, en lugar de dirigirse únicamente hacia el mouse, cada agente calcula múltiples direcciones hacia otros agentes cercanos. Estas direcciones generan fuerzas de atracción y repulsión, produciendo agrupamientos dinámicos que se forman, se disuelven y se reorganizan continuamente.
+
+- El código de la aplicación.
+
+```
+let agents = [];
+let total = 100;
+
+function setup() {
+  createCanvas(700, 450);
+  colorMode(HSB, 360, 100, 100, 100);
+
+  for (let i = 0; i < total; i++) {
+    agents.push(new Agent());
+  }
+}
+
+function draw() {
+  background(0, 0, 95, 20);
+
+  for (let a of agents) {
+    a.applyBehaviors(agents);
+    a.update();
+    a.edges();
+    a.show();
+  }
+}
+
+class Agent {
+  constructor() {
+    this.position = createVector(random(width), random(height));
+    this.velocity = p5.Vector.random2D();
+    this.acceleration = createVector(0, 0);
+
+    this.topSpeed = 3;
+    this.maxForce = 0.05;
+
+    this.size = random(3, 6);
+    this.hue = random(360);
+  }
+
+  applyForce(force) {
+    this.acceleration.add(force);
+  }
+
+  applyBehaviors(agents) {
+    let attraction = createVector(0, 0);
+    let repulsion = createVector(0, 0);
+    let count = 0;
+
+    for (let other of agents) {
+      if (other !== this) {
+        let d = p5.Vector.dist(this.position, other.position);
+
+        if (d < 100) {
+          // Paso 1: dirección
+          let dir = p5.Vector.sub(other.position, this.position);
+
+          // Paso 2: normalizar
+          dir.normalize();
+
+          // Paso 3: escalar
+          dir.mult(0.05);
+
+          attraction.add(dir);
+
+          // Repulsión si están muy cerca
+          if (d < 30) {
+            let repel = p5.Vector.sub(this.position, other.position);
+            repel.normalize();
+            repel.mult(0.1);
+            repulsion.add(repel);
+          }
+
+          count++;
+        }
+      }
+    }
+
+    if (count > 0) {
+      attraction.div(count);
+      repulsion.div(count);
+    }
+
+    this.applyForce(attraction);
+    this.applyForce(repulsion);
+  }
+
+  update() {
+    this.velocity.add(this.acceleration);
+    this.velocity.limit(this.topSpeed);
+    this.position.add(this.velocity);
+    this.acceleration.mult(0);
+  }
+
+  edges() {
+    if (this.position.x > width) this.position.x = 0;
+    if (this.position.x < 0) this.position.x = width;
+    if (this.position.y > height) this.position.y = 0;
+    if (this.position.y < 0) this.position.y = height;
+  }
+
+  show() {
+    stroke(this.hue, 70, 80, 80);
+    strokeWeight(this.size);
+    point(this.position.x, this.position.y);
+
+    // Dibujar conexiones cercanas
+    for (let other of agents) {
+      let d = p5.Vector.dist(this.position, other.position);
+      if (d < 80) {
+        stroke(this.hue, 50, 80, 20);
+        line(this.position.x, this.position.y,
+             other.position.x, other.position.y);
+      }
+    }
+  }
+}
+```
+
+- Un enlace al proyecto en el editor de p5.js.
+
+https://editor.p5js.org/Nikeal/sketches/eWtXIjdXq
+
+- Selecciona capturas de pantalla representativas de tu pieza de arte generativa.
+
+<img width="703" height="445" alt="image" src="https://github.com/user-attachments/assets/bd1b354c-b05e-4b1e-a9ae-cb694abbe8b4" />
+
+<img width="696" height="445" alt="image" src="https://github.com/user-attachments/assets/54dddee0-1cf8-4fe7-9cc7-ae4fc6ab5da1" />
+
 
 
 

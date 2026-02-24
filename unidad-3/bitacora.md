@@ -395,12 +395,217 @@ class Mover {
 }
 ```
 
-
-
-
 ## Bitácora de aplicación 
 
+1. Descripcion 
+**Entropía de la Memoria**
+- Es una obra generativa que simula un campo dinámico donde fragmentos de memoria flotan e interactúan constantemente. Cada partícula representa un recuerdo que no es estático, sino que está influenciado por fuerzas invisibles que determinan su movimiento. La historia que propongo en la obra es que la memoria nunca es completamente estable: tiende a agruparse, pero la entropía siempre introduce desorden. Existe una tensión constante entre atracción y repulsión, entre organización y caos.
 
+- El sistema está construido bajo la segunda ley de Newton (F = m·a). La aceleración de cada partícula no se define directamente, sino que surge como resultado de la suma de fuerzas:
+
+* Una fuerza de entropía (ruido) que introduce movimiento orgánico.
+* Fuerzas colectivas de atracción y repulsión entre partículas.
+* Resistencia del medio (drag), que amortigua el movimiento.
+* Campos espaciales que modifican el comportamiento según la zona.
+* Interacción del usuario, que actúa como una fuerza externa.
+
+La forma global del sistema no está programada explícitamente; emerge de la interacción constante entre estas fuerzas.
+
+2.
+
+```
+let particulas = [];
+let numParticulas = 400;
+
+let shockwave = false;
+let shockCenter;
+let shockFrames = 0;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+
+  for (let i = 0; i < numParticulas; i++) {
+    particulas.push(new Particula());
+  }
+
+  document.oncontextmenu = () => false;
+  background(10);
+}
+
+function draw() {
+  background(10, 25);
+
+  for (let p of particulas) {
+
+    // ENTROPÍA GLOBAL 
+    let fuerzaRuido = createVector(
+      noise(p.pos.x * 0.005, p.pos.y * 0.005, frameCount * 0.01) - 0.5,
+      noise(p.pos.y * 0.005, p.pos.x * 0.005, frameCount * 0.01) - 0.5
+    );
+    fuerzaRuido.mult(0.25); // antes 0.35
+    p.aplicarFuerza(fuerzaRuido);
+
+    // CAMPOS ESPACIALES
+
+    if (p.pos.x < width * 0.25) {
+      let turbulencia = p5.Vector.random2D().mult(0.4); // antes 0.6
+      p.aplicarFuerza(turbulencia);
+    }
+
+    if (p.pos.x > width * 0.75) {
+      let speed = p.vel.mag();
+      if (speed > 0) {
+        let dragMag = 0.04 * speed * speed; // más viscosidad
+        let drag = p.vel.copy();
+        drag.mult(-1);
+        drag.normalize();
+        drag.mult(dragMag);
+        p.aplicarFuerza(drag);
+      }
+    }
+
+    if (p.pos.y < height * 0.25) {
+      let centro = createVector(width / 2, height * 0.125);
+      let repel = p5.Vector.sub(p.pos, centro);
+      let d = repel.mag();
+      if (d < 200) {
+        repel.setMag(0.6); // antes 0.8
+        p.aplicarFuerza(repel);
+      }
+    }
+
+    if (p.pos.y > height * 0.75) {
+      let calma = fuerzaRuido.copy().mult(-0.6);
+      p.aplicarFuerza(calma);
+    }
+
+    // INTERACCIÓN COLECTIVA
+    for (let otra of particulas) {
+      if (otra !== p) {
+
+        let dir = p5.Vector.sub(otra.pos, p.pos);
+        let d = dir.mag();
+
+        if (d > 0 && d < 80) {
+
+          dir.normalize();
+
+          if (d < 20) {
+            let repel = dir.copy().mult(-1).mult(0.6); // antes 0.8
+            p.aplicarFuerza(repel);
+          } else {
+            let attract = dir.copy().mult(0.02); // antes 0.03
+            p.aplicarFuerza(attract);
+          }
+        }
+      }
+    }
+
+    // INTERACTIVIDAD IZQUIERDA
+    if (mouseIsPressed && mouseButton === LEFT) {
+      let mousePos = createVector(mouseX, mouseY);
+      let atraccion = p5.Vector.sub(mousePos, p.pos);
+      let distancia = atraccion.mag();
+
+      if (distancia < 300) {
+        atraccion.setMag(0.9); // antes 1.2
+        p.aplicarFuerza(atraccion);
+      }
+    }
+
+    // REPULSIVO DERECHO
+    if (shockwave) {
+      let repel = p5.Vector.sub(p.pos, shockCenter);
+      let d = repel.mag();
+
+      if (d < 400 && d > 0) {
+        repel.setMag(1.5); // antes 2
+        p.aplicarFuerza(repel);
+      }
+    }
+
+    // DRAG GENERAL 
+    let speed = p.vel.mag();
+    if (speed > 0) {
+      let dragMag = 0.02 * speed * speed; // antes 0.01
+      let drag = p.vel.copy();
+      drag.mult(-1);
+      drag.normalize();
+      drag.mult(dragMag);
+      p.aplicarFuerza(drag);
+    }
+
+    p.actualizar();
+    p.mostrar();
+    p.bordes();
+  }
+
+  if (shockwave) {
+    shockFrames--;
+    if (shockFrames <= 0) {
+      shockwave = false;
+    }
+  }
+}
+
+function mousePressed() {
+  if (mouseButton === RIGHT) {
+    shockwave = true;
+    shockCenter = createVector(mouseX, mouseY);
+    shockFrames = 15;
+  }
+}
+
+class Particula {
+  constructor() {
+    this.pos = createVector(random(width), random(height));
+    this.vel = p5.Vector.random2D().mult(random(0.3, 1.5)); // velocidad inicial menor
+    this.acc = createVector(0, 0);
+
+    this.masa = random(0.8, 2.5);
+    this.maxSpeed = 3 / this.masa; // antes 4/mass
+
+    this.hue = random(180, 260);
+  }
+
+  aplicarFuerza(fuerza) {
+    let f = p5.Vector.div(fuerza, this.masa);
+    this.acc.add(f);
+  }
+
+  actualizar() {
+    this.vel.add(this.acc);
+    this.vel.limit(this.maxSpeed);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+
+    this.hue += 0.02;
+    if (this.hue > 360) this.hue = 0;
+  }
+
+  mostrar() {
+    let brillo = map(this.vel.mag(), 0, this.maxSpeed, 60, 100);
+    stroke(this.hue, 60, brillo, 70);
+    strokeWeight(2);
+    point(this.pos.x, this.pos.y);
+  }
+
+  bordes() {
+    if (this.pos.x > width) this.pos.x = 0;
+    if (this.pos.x < 0) this.pos.x = width;
+    if (this.pos.y > height) this.pos.y = 0;
+    if (this.pos.y < 0) this.pos.y = height;
+  }
+}
+```
+3. Un enlace al proyecto en el editor de p5.js.
+https://editor.p5js.org/Nikeal/sketches/-9d3OD0Cw
+
+4. Selecciona capturas de pantalla representativas de tu pieza de arte generativa.
+<img width="940" height="772" alt="image" src="https://github.com/user-attachments/assets/9bc6d676-2458-41ac-b521-97cd559c5292" />
+<img width="942" height="773" alt="image" src="https://github.com/user-attachments/assets/18851685-9e8b-4157-b7ee-e85d55c9e093" />
 
 ## Bitácora de reflexión
+
 

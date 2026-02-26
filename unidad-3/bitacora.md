@@ -418,7 +418,7 @@ Instrucciones:
 
 2.
 
-```
+```JS
 // Arreglo que almacenará todas las partículas del sistema
 let particulas = [];
 // Número total de partículas que existirán en el entorno
@@ -725,6 +725,144 @@ https://editor.p5js.org/Nikeal/sketches/-9d3OD0Cw
 
 ## Bitácora de reflexión
 
+**1. Explica detalladamente en tu bitácora ¿Qué es el marco de movimiento motion 101 y cómo se relacionan: fuerza, aceleración, velocidad y posición?**
 
+- El movimiento Motion 101 explica cómo se produce el movimiento en sistemas dinámicos a partir de una cadena de relaciones físicas, como una acumulacion de fuerzas en el tiempo, haciendo que el movimiento no se programe directamente y sea de manera natural como en el mundo real.
+- Aqui el movimiento se construye de cuatro elementos que se relacionan entre sí de manera secuencial: Fuerza → Aceleración → Velocidad → Posición
 
+1. La fuerza (vector) es el inicio de todo, aplicar la fuerza significa modificar la aceleración de un objeto. Esto se basa en la segunda ley de Newton (F = m·a), que indica que la aceleración depende de la fuerza aplicada y de la masa del objeto.
 
+2. La aceleración representa el cambio en la velocidad y se calcula como la suma de todas las fuerzas que están actuando sobre el sistema.
+
+3. La velocidad se actualiza sumando la aceleración e indica qué tan rápido y en qué dirección se está moviendo el objeto, es acumulativa haciendo que el movimiento se vuelve progresivamente más intenso.
+
+4. La posición se actualiza sumando la velocidad y es el resultado final de todo lo anterior.
+
+**2. Vas a analizar este video sobre el artista Alexander Calder. Selecciona una de sus obras y luego crea una obra generativa inspirada en la obra de Calder que seleccionaste y el marco de movimiento motion 101 con fuerzas que trabajamos en esta unidad.**
+
+- Análisis de Alexander Calder, obra Lobster Trap and Fish Tail
+
+Esta es uno de los primeros móviles suspendidos que realizó Calder y esta compuesta por muchas formas orgánicas distribuidas en diferentes niveles, conectadas por medio de varillas metálicas que funcionan como sistemas de equilibrio. Cada elemento tiene un peso específico y está ubicado estratégicamente para que el conjunto mantenga un balance dinámico.
+
+Lo más interesante de esta pieza es que el movimiento no está controlado por ningún motor ni mecanismo artificial. El desplazamiento ocurre gracias a fuerzas naturales como:
+
+* La gravedad
+* La tensión en las varillas
+* Las corrientes de aire
+* El peso distribuido en cada pieza
+
+Haciendo que el sistema nunca se mueva igual dos veces.
+
+- Relación entre Calder y Motion 101
+
+Al analizar la obra me di cuenta que Caldere utilizaba el mismo principio que en Motion 101:
+
+Fuerza → Aceleración → Velocidad → Posición
+
+En el caso de Calder:
+
+* La fuerza es el viento o la gravedad.
+* La aceleración ocurre cuando esas fuerzas cambian el estado del móvil.
+* La velocidad surge como respuesta a esa alteración.
+* La posición cambia constantemente en el espacio.
+
+```js
+let piezas = [];
+let numPiezas = 8;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+  
+  // Creamos piezas que cuelgan de diferentes puntos del "techo"
+  for (let i = 0; i < numPiezas; i++) {
+    piezas.push(new PiezaCalder(random(width), random(100, 200)));
+  }
+}
+
+function draw() {
+  background(20, 10, 95); // Fondo color papel viejo/museo
+
+  // Dibujar línea de soporte superior
+  stroke(0, 20);
+  line(0, 50, width, 50);
+
+  for (let p of piezas) {
+    // 1. FUERZA: Brisa constante (Ruido de Perlin)
+    let fuerzaViento = createVector(noise(frameCount * 0.01, p.anchor.x) - 0.5, 0);
+    fuerzaViento.mult(0.2);
+    p.aplicarFuerza(fuerzaViento);
+
+    // 2. FUERZA: Gravedad y Tensión (Simulada como muelle)
+    let gravedad = createVector(0, 0.1 * p.masa);
+    p.aplicarFuerza(gravedad);
+
+    // 3. INTERACTIVIDAD: Al mover el mouse, "empujas" las piezas
+    if (dist(mouseX, mouseY, p.pos.x, p.pos.y) < 100) {
+      let empuje = createVector(mouseX - pmouseX, mouseY - pmouseY);
+      empuje.mult(0.5);
+      p.aplicarFuerza(empuje);
+    }
+
+    p.actualizar();
+    p.mostrar();
+  }
+}
+
+class PiezaCalder {
+  constructor(x, largoHilo) {
+    this.anchor = createVector(x, 50); // Punto de donde cuelga
+    this.pos = createVector(x, 50 + largoHilo);
+    this.vel = createVector(0, 0);
+    this.acc = createVector(0, 0);
+    
+    this.masa = random(2, 6);
+    this.largoHilo = largoHilo;
+    this.hue = random([0, 45, 200]); // Colores primarios clásicos de Calder (Rojo, Amarillo, Azul)
+    this.tamano = this.masa * 15;
+  }
+
+  aplicarFuerza(f) {
+    let fuerzaCopiada = f.copy();
+    fuerzaCopiada.div(this.masa); // Newton: a = F/m
+    this.acc.add(fuerzaCopiada);
+  }
+
+  actualizar() {
+    // Motion 101
+    this.vel.add(this.acc);
+    this.vel.mult(0.98); // Amortiguación (resistencia del aire)
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+
+    // Restricción de Hilo (Mantenemos la pieza cerca de su anclaje)
+    let vectorHilo = p5.Vector.sub(this.pos, this.anchor);
+    if (vectorHilo.mag() > this.largoHilo) {
+      vectorHilo.setMag(this.largoHilo);
+      this.pos = p5.Vector.add(this.anchor, vectorHilo);
+      this.vel.mult(0.5); // Pierde energía al tensarse el hilo
+    }
+  }
+
+  mostrar() {
+    // Dibujar el hilo
+    stroke(0, 60);
+    strokeWeight(1);
+    line(this.anchor.x, this.anchor.y, this.pos.x, this.pos.y);
+
+    // Dibujar la placa de metal (estética Calder)
+    noStroke();
+    fill(this.hue, 80, 80, 90);
+    
+    push();
+    translate(this.pos.x, this.pos.y);
+    // La pieza rota un poco según la velocidad
+    rotate(this.vel.x * 0.2);
+    // Formas orgánicas no perfectas
+    if (this.hue == 0) ellipse(0, 0, this.tamano, this.tamano * 0.7);
+    else if (this.hue == 45) triangle(-this.tamano/2, this.tamano/2, this.tamano/2, this.tamano/2, 0, -this.tamano/2);
+    else rect(-this.tamano/2, -this.tamano/2, this.tamano, this.tamano, 5);
+    pop();
+  }
+}
+```

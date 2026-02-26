@@ -399,7 +399,7 @@ class Mover {
 
 1. Descripcion 
 **Entropía de la Memoria**
-- Es una obra generativa que simula un campo dinámico donde fragmentos de memoria flotan e interactúan constantemente. Cada partícula representa un recuerdo que no es estático, sino que está influenciado por fuerzas invisibles que determinan su movimiento. La historia que propongo en la obra es que la memoria nunca es completamente estable: tiende a agruparse, pero la entropía siempre introduce desorden. Existe una tensión constante entre atracción y repulsión, entre organización y caos.
+- Es una obra generativa que simula un campo dinámico donde fragmentos de memoria flotan e interactúan constantemente. Cada partícula representa un recuerdo que no es estático, sino que está influenciado por fuerzas invisibles que determinan su movimiento. La historia que propongo en la obra es que la memoria nunca es completamente estable: tiende a agruparse, pero el tiempo(entropia) siempre introduce desorden. Existe una tensión constante entre atracción y repulsión, entre organización y caos.
 
 - El sistema está construido bajo la segunda ley de Newton (F = m·a). La aceleración de cada partícula no se define directamente, sino que surge como resultado de la suma de fuerzas:
 
@@ -419,7 +419,6 @@ Instrucciones:
 2.
 
 ```
-// VARIABLES GLOBALES DEL SISTEMA
 // Arreglo que almacenará todas las partículas del sistema
 let particulas = [];
 // Número total de partículas que existirán en el entorno
@@ -725,6 +724,7 @@ https://editor.p5js.org/Nikeal/sketches/-9d3OD0Cw
 <img width="942" height="773" alt="image" src="https://github.com/user-attachments/assets/18851685-9e8b-4157-b7ee-e85d55c9e093" />
 
 ## Bitácora de reflexión
+
 
 
 

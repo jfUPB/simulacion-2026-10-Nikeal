@@ -1180,10 +1180,10 @@ https://editor.p5js.org/Nikeal/sketches/DSwyZRCE1
 
 ### 4. Selecciona capturas de pantalla representativas de tu pieza de arte generativa.
 
-
-
+<img width="942" height="734" alt="image" src="https://github.com/user-attachments/assets/36ecda48-2d3e-452a-80ce-dff4bfd7b63f" />
 
 ## Bitácora de reflexión
+
 
 
 

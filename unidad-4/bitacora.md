@@ -642,6 +642,14 @@ class Pendulum {
 
 ### 1. Concepto de tu obra generativa
 
+Hay una membrana (red), la cual es sensible y esta habitada por entidades autonomas, donde la superficie funciona como un sistema vivo que responde a estímulos externos y a la actividad interna de los agentes que la recorren.
+
+La idea que dio origen a esta obra es de una red orgánica, similar a un ecosistema microscópico o una red de telaraña. En esta red, pequeños agentes llamados simbiontes se desplazan entre nodos de la membrana dejando rastros de energía, los cuales influyen en las decisiones de movimiento de otros agentes. De esta manera, el sistema genera patrones emergentes a partir de interacciones locales simples.
+
+La membrana está compuesta por una estructura a base de nodos que estan conectados y se comportan como partículas físicas sujetas a fuerzas. Estos nodos reaccionan a diferentes estímulos: fuerzas generadas por el usuario mediante el mouse, vibraciones producidas por la entrada de audio del micrófono y variaciones orgánicas producidas por ruido de Perlin. Esto permite que la superficie se comporte como un tejido elástico que se deforma y transmite energía a través de su estructura.
+
+A partir de esta idea de un ecosistema simbiótico, se diseñaron varias reglas: los simbiontes se mueven entre nodos vecinos buscando regiones con menor carga energética, dejan rastros que se disipan con el tiempo y su velocidad puede variar según el sonido del entorno. Ademas, el usuario participa en el sistema como una fuerza externa que altera el equilibrio del ecosistema. Al interactuar con el mouse puede atraer o repeler la membrana, mientras que el sonido del micrófono genera expansiones en la red y modifica el comportamiento de los simbiontes. 
+
 ### 2. El código de la aplicación.
 ```js
 // arreglo que almacenará la red de nodos que forman la membrana
@@ -1035,4 +1043,5 @@ https://editor.p5js.org/Nikeal/sketches/DSwyZRCE1
 
 
 ## Bitácora de reflexión
+
 

@@ -640,6 +640,399 @@ class Pendulum {
 
 ## Bitácora de aplicación 
 
+### 1. Concepto de tu obra generativa
+
+### 2. El código de la aplicación.
+```js
+// arreglo que almacenará la red de nodos que forman la membrana
+let redNodos = []; 
+// arreglo que almacenará los agentes que se moverán sobre la red
+let simbiontes = [];
+// número de anillos concéntricos que tendrá la membrana
+let anillos = 12;
+// número de divisiones radiales en cada anillo
+let radios = 30;
+// variable que almacenará el objeto del micrófono
+let mic;
+// variable que indica si el audio ya fue activado
+let audioActivo = false;
+
+// variable que guarda el volumen del micrófono suavizado
+let volSuavizado = 0; 
+
+// color base que se usará para la paleta de la visualización
+let colorBase = 200;
+
+// función setup() se ejecuta una sola vez al iniciar el programa
+function setup() {
+
+  // crea un canvas del tamaño de la ventana del navegador
+  createCanvas(windowWidth, windowHeight);
+
+  // cambia el modo de color a HSB (tono, saturación, brillo, alpha)
+  colorMode(HSB, 360, 100, 100, 100);
+  
+  // crea el objeto del micrófono para capturar audio
+  mic = new p5.AudioIn();
+
+  // calcula el radio máximo que tendrá la membrana
+  let radioMaximo = min(width, height) * 0.45;
+
+  // calcula la posición X del centro del canvas
+  let cx = width / 2;
+
+  // calcula la posición Y del centro del canvas
+  let cy = height / 2;
+
+// 1. Construir la membrana
+
+  // recorre cada anillo de la estructura
+  for (let i = 0; i <= anillos; i++) {
+
+    // crea un arreglo para almacenar los nodos de ese anillo
+    let fila = [];
+
+    // calcula la distancia radial del anillo actual
+    let distanciaR = map(i, 0, anillos, 0, radioMaximo);
+    
+    // recorre cada división circular del anillo
+    for (let j = 0; j < radios; j++) {
+
+      // calcula el ángulo correspondiente a esta división
+      let angulo = map(j, 0, radios, 0, TWO_PI);
+
+      // convierte coordenadas polares a coordenadas cartesianas para X
+      let x = cx + cos(angulo) * distanciaR;
+
+      // convierte coordenadas polares a coordenadas cartesianas para Y
+      let y = cy + sin(angulo) * distanciaR;
+
+      // crea un nuevo nodo y lo agrega a la fila
+      fila.push(new NodoVidrio(x, y, i, j));
+    }
+
+    // agrega la fila completa de nodos a la red
+    redNodos.push(fila);
+  }
+
+  // 2. Inyectar los Simbiontes en la red
+
+  // crea 45 agentes simbiontes
+  for (let i = 0; i < 45; i++) {
+
+    // agrega un nuevo simbionte al arreglo
+    simbiontes.push(new Simbionte());
+  }
+}
+
+// función draw() se ejecuta continuamente (cada frame)
+function draw() {
+
+  // pinta el fondo oscuro
+  background(10, 15, 15);
+
+  // variable para almacenar el volumen del micrófono
+  let volumen = 0;
+
+  // si el audio ya fue activado
+  if (audioActivo) {
+
+    // obtiene el nivel del micrófono y lo amplifica
+    volumen = mic.getLevel() * 3; 
+
+    // suaviza el cambio de volumen para evitar saltos bruscos
+    volSuavizado = lerp(volSuavizado, volumen, 0.15); 
+  }
+
+ // --- FÍSICA Y REGLAS DE LA MEMBRANA ---
+
+  // recorre todos los anillos
+  for (let i = 0; i <= anillos; i++) {
+
+    // recorre todos los radios de cada anillo
+    for (let j = 0; j < radios; j++) {
+
+      // obtiene el nodo actual de la red
+      let nodo = redNodos[i][j];
+
+// EVENTO MOUSE
+
+      // si el mouse está presionado
+      if (mouseIsPressed) {
+
+        // crea un vector con la posición del mouse
+        let mouseVec = createVector(mouseX, mouseY);
+
+        // calcula la distancia entre el nodo y el mouse
+        let distMouse = p5.Vector.dist(nodo.pos, mouseVec);
+        
+        // si el nodo está dentro del área de influencia
+        if (distMouse < 350) {
+
+          // calcula la dirección de la fuerza desde el nodo al mouse
+          let fuerza = p5.Vector.sub(mouseVec, nodo.pos);
+
+          // normaliza el vector (solo dirección)
+          fuerza.normalize();
+
+          // calcula la magnitud de la fuerza según la distancia
+          let magnitud = map(distMouse, 0, 350, 1.5, 0);
+          
+          // si se presiona la barra espaciadora se invierte la fuerza
+          if (keyIsDown(32)) fuerza.mult(-2.5); // Repulsión
+
+          // si no, se aplica como atracción
+          else fuerza.mult(magnitud); // Atracción
+          
+          // aplica la fuerza al nodo
+          nodo.aplicarFuerza(fuerza);
+        }
+      }
+// EVENTO AUDIO
+
+      // si el volumen supera un umbral
+      if (volSuavizado > 0.005) {
+
+        // crea un vector en el centro del canvas
+        let centro = createVector(width/2, height/2);
+
+        // calcula un vector desde el centro hacia el nodo
+        let expansion = p5.Vector.sub(nodo.pos, centro);
+
+        // normaliza la dirección
+        expansion.normalize();
+
+        // multiplica la fuerza según el volumen
+        expansion.mult(volSuavizado * 80); 
+
+        // aplica la fuerza de expansión al nodo
+        nodo.aplicarFuerza(expansion);
+      }
+
+      // actualiza la física del nodo
+      nodo.actualizar();
+    }
+  }
+
+
+// --- RENDERIZADO DE LA MEMBRANA ---
+
+  // desactiva el borde de las figuras
+  noStroke();
+  
+  // recorre todos los anillos excepto el último
+  for (let i = 0; i < anillos; i++) {
+
+    // recorre los radios
+    for (let j = 0; j < radios; j++) {
+
+      // obtiene cuatro nodos para formar un cuadrilátero
+      let n1 = redNodos[i][j];
+      let n2 = redNodos[i + 1][j];
+      let n3 = redNodos[i + 1][(j + 1) % radios];
+      let n4 = redNodos[i][(j + 1) % radios];
+
+      // calcula cuánto se deformó el nodo respecto a su origen
+      let estiramiento = p5.Vector.dist(n1.pos, n1.origen);
+      
+      // calcula la energía acumulada dejada por los simbiontes
+      let calorAcumulado = n1.cargaEnergia * 50; 
+      
+      // calcula el matiz del color según deformación, audio y energía
+      let matiz = (colorBase + estiramiento * 2 + volSuavizado * 500 - calorAcumulado) % 360;
+
+      // calcula el brillo del color
+      let brillo = map(estiramiento, 0, 100, 30, 100) + (volSuavizado * 150) + (n1.cargaEnergia * 100);
+
+      // calcula la transparencia según el anillo
+      let alfa = map(i, 0, anillos, 90, 0); 
+
+      // aplica color de relleno
+      fill(matiz, 80, brillo, alfa);
+
+      // aplica color del borde
+      stroke(matiz, 50, brillo + 30, alfa * 0.6);
+
+      // define grosor del borde
+      strokeWeight(0.5);
+
+      // comienza la figura
+      beginShape();
+
+      // dibuja los vértices del cuadrilátero
+      vertex(n1.pos.x, n1.pos.y);
+      vertex(n2.pos.x, n2.pos.y);
+      vertex(n3.pos.x, n3.pos.y);
+      vertex(n4.pos.x, n4.pos.y);
+
+      // cierra la figura
+      endShape(CLOSE);
+    }
+  }
+
+  // --- REGLAS AUTÓNOMAS DE LOS SIMBIONTES ---
+  for (let s of simbiontes) {
+    s.actualizar(volSuavizado);
+    s.mostrar();
+  }
+
+  // --- INTERFAZ ---
+  fill(255);
+  noStroke();
+  textSize(13);
+  text("SISTEMA GENERATIVO: ESTIGMERGIA Y FÍSICA", 20, 30);
+  text("1. MANTÉN MOUSE para succionar. ESPACIO para repeler.", 20, 50);
+  text("2. HABLA para inflar el tejido y alterar rutas nerviosas.", 20, 70);
+  text("3. Flechas Der/Izq para cambiar paleta base.", 20, 90);
+  
+  fill(0, 100, 100, volSuavizado * 300);
+  circle(25, 115, 10 + volSuavizado * 100);
+  fill(255);
+  text("Mic Input", 45, 119);
+}
+
+// --- CLASES DEL SISTEMA GENERATIVO ---
+
+class NodoVidrio {
+  constructor(x, y, anillo, radioIdx) {
+    this.origenBase = createVector(x, y);
+    this.origen = createVector(x, y);
+    this.pos = createVector(x, y);
+    this.vel = createVector(0, 0);
+    this.acc = createVector(0, 0);
+    this.masa = map(anillo, 0, anillos, 3, 1); 
+    this.ruidoOffsetX = x * 0.01;
+    this.ruidoOffsetY = y * 0.01;
+    
+    // REGLA GENERATIVA: Rastro de las visitas
+    this.cargaEnergia = 0; 
+  }
+
+  aplicarFuerza(f) {
+    let fuerza = p5.Vector.div(f, this.masa);
+    this.acc.add(fuerza);
+  }
+
+  actualizar() {
+    let nx = map(noise(this.ruidoOffsetX, frameCount * 0.005), 0, 1, -20, 20);
+    let ny = map(noise(this.ruidoOffsetY, frameCount * 0.005), 0, 1, -20, 20);
+    this.origen.x = this.origenBase.x + nx;
+    this.origen.y = this.origenBase.y + ny;
+
+    let resorte = p5.Vector.sub(this.origen, this.pos);
+    resorte.mult(0.08); 
+    this.aplicarFuerza(resorte);
+
+    this.vel.add(this.acc);
+    this.vel.mult(0.88); 
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+    
+    // REGLA GENERATIVA: El rastro térmico se evapora con el tiempo
+    this.cargaEnergia *= 0.95; 
+  }
+}
+
+class Simbionte {
+  constructor() {
+    this.idxAnillo = floor(random(anillos));
+    this.idxRadio = floor(random(radios));
+    
+    this.nodoActual = redNodos[this.idxAnillo][this.idxRadio];
+    this.nodoDestino = this.nodoActual;
+    
+    this.t = 1; 
+    this.velocidadBase = random(0.02, 0.06);
+  }
+
+  escogerDestino() {
+    // 1. Identificar nodos vecinos posibles (Sintaxis topológica)
+    let opciones = [];
+    
+    if (this.idxAnillo < anillos) opciones.push({a: this.idxAnillo + 1, r: this.idxRadio});
+    if (this.idxAnillo > 0) opciones.push({a: this.idxAnillo - 1, r: this.idxRadio});
+    opciones.push({a: this.idxAnillo, r: (this.idxRadio + 1) % radios});
+    opciones.push({a: this.idxAnillo, r: (this.idxRadio - 1 + radios) % radios});
+
+    // 2. REGLA GENERATIVA DE DECISIÓN: Buscar el camino menos transitado
+    let mejorOpcion = opciones[0];
+    let menorCarga = Infinity;
+
+    for (let op of opciones) {
+      let nodoCandidato = redNodos[op.a][op.r];
+      // Si el nodo está más "frío", se convierte en la mejor opción
+      if (nodoCandidato.cargaEnergia < menorCarga) {
+        menorCarga = nodoCandidato.cargaEnergia;
+        mejorOpcion = op;
+      }
+    }
+
+    // A veces, introducimos una pequeña mutación (aleatoriedad) para que no se queden atrapados
+    if (random(1) < 0.15) {
+      mejorOpcion = random(opciones);
+    }
+
+    this.idxAnillo = mejorOpcion.a;
+    this.idxRadio = mejorOpcion.r;
+    
+    this.nodoDestino = redNodos[this.idxAnillo][this.idxRadio];
+    this.t = 0; 
+    
+    // Dejar rastro (Feromona/Calor) en el nuevo nodo
+    this.nodoDestino.cargaEnergia += 0.8; 
+  }
+
+  actualizar(vol) {
+    if (this.t >= 1) {
+      this.nodoActual = this.nodoDestino;
+      this.escogerDestino();
+    } else {
+      let velocidadActual = this.velocidadBase + (vol * 0.8);
+      this.t += velocidadActual;
+      
+      // Seguro para no pasarse del destino
+      if (this.t > 1) this.t = 1;
+    }
+  }
+
+  mostrar() {
+    let posX = lerp(this.nodoActual.pos.x, this.nodoDestino.pos.x, this.t);
+    let posY = lerp(this.nodoActual.pos.y, this.nodoDestino.pos.y, this.t);
+
+    let brillo = 80 + sin(frameCount * 0.2) * 20; 
+    
+    noFill();
+    stroke(50, 20, 100, 40); 
+    strokeWeight(10);
+    point(posX, posY);
+
+    stroke(50, 0, 100, 100); 
+    strokeWeight(3);
+    point(posX, posY);
+  }
+}
+
+function mousePressed() {
+  if (!audioActivo) {
+    userStartAudio();
+    mic.start();
+    audioActivo = true;
+  }
+}
+
+function keyPressed() {
+  if (keyCode === RIGHT_ARROW) colorBase = (colorBase + 45) % 360;
+  else if (keyCode === LEFT_ARROW) colorBase = (colorBase - 45 + 360) % 360;
+}
+```
+### 3. Un enlace al proyecto en el editor de p5.js.
+
+https://editor.p5js.org/Nikeal/sketches/DSwyZRCE1
+
+### 4. Selecciona capturas de pantalla representativas de tu pieza de arte generativa.
+
+
 
 
 ## Bitácora de reflexión
+

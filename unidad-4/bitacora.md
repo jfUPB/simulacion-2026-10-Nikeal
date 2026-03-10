@@ -824,212 +824,353 @@ function draw() {
 
 
 // --- RENDERIZADO DE LA MEMBRANA ---
+// Esta sección se encarga de dibujar visualmente la red de nodos que forma la membrana
 
-  // desactiva el borde de las figuras
-  noStroke();
-  
-  // recorre todos los anillos excepto el último
-  for (let i = 0; i < anillos; i++) {
+// desactiva el borde de las figuras inicialmente
+noStroke();
 
-    // recorre los radios
-    for (let j = 0; j < radios; j++) {
+// recorre todos los anillos de la red excepto el último
+// esto se hace porque cada celda se forma entre un anillo y el siguiente
+for (let i = 0; i < anillos; i++) {
 
-      // obtiene cuatro nodos para formar un cuadrilátero
-      let n1 = redNodos[i][j];
-      let n2 = redNodos[i + 1][j];
-      let n3 = redNodos[i + 1][(j + 1) % radios];
-      let n4 = redNodos[i][(j + 1) % radios];
+  // recorre todas las divisiones radiales de cada anillo
+  for (let j = 0; j < radios; j++) {
 
-      // calcula cuánto se deformó el nodo respecto a su origen
-      let estiramiento = p5.Vector.dist(n1.pos, n1.origen);
-      
-      // calcula la energía acumulada dejada por los simbiontes
-      let calorAcumulado = n1.cargaEnergia * 50; 
-      
-      // calcula el matiz del color según deformación, audio y energía
-      let matiz = (colorBase + estiramiento * 2 + volSuavizado * 500 - calorAcumulado) % 360;
+    // obtiene cuatro nodos vecinos que formarán un cuadrilátero de la malla
+    let n1 = redNodos[i][j]; // nodo actual
+    let n2 = redNodos[i + 1][j]; // nodo del anillo siguiente en la misma posición radial
+    let n3 = redNodos[i + 1][(j + 1) % radios]; // nodo siguiente en anillo y radio
+    let n4 = redNodos[i][(j + 1) % radios]; // nodo siguiente en radio dentro del mismo anillo
 
-      // calcula el brillo del color
-      let brillo = map(estiramiento, 0, 100, 30, 100) + (volSuavizado * 150) + (n1.cargaEnergia * 100);
+    // calcula cuánto se ha deformado el nodo respecto a su posición original
+    // esto sirve para medir la "tensión" de la membrana
+    let estiramiento = p5.Vector.dist(n1.pos, n1.origen);
+    
+    // calcula la energía acumulada en el nodo causada por el paso de los simbiontes
+    // esta energía funciona como una especie de "calor" o rastro
+    let calorAcumulado = n1.cargaEnergia * 50; 
+    
+    // calcula el color (matiz) dinámicamente según:
+    // color base + deformación + volumen del micrófono - calor acumulado
+    let matiz = (colorBase + estiramiento * 2 + volSuavizado * 500 - calorAcumulado) % 360;
 
-      // calcula la transparencia según el anillo
-      let alfa = map(i, 0, anillos, 90, 0); 
+    // calcula el brillo del color según deformación, audio y energía de simbiontes
+    let brillo = map(estiramiento, 0, 100, 30, 100) + (volSuavizado * 150) + (n1.cargaEnergia * 100);
 
-      // aplica color de relleno
-      fill(matiz, 80, brillo, alfa);
+    // calcula la transparencia según el anillo
+    // los anillos exteriores son más transparentes
+    let alfa = map(i, 0, anillos, 90, 0); 
 
-      // aplica color del borde
-      stroke(matiz, 50, brillo + 30, alfa * 0.6);
+    // aplica el color de relleno a la celda
+    fill(matiz, 80, brillo, alfa);
 
-      // define grosor del borde
-      strokeWeight(0.5);
+    // aplica el color del borde
+    stroke(matiz, 50, brillo + 30, alfa * 0.6);
 
-      // comienza la figura
-      beginShape();
+    // define el grosor del borde
+    strokeWeight(0.5);
 
-      // dibuja los vértices del cuadrilátero
-      vertex(n1.pos.x, n1.pos.y);
-      vertex(n2.pos.x, n2.pos.y);
-      vertex(n3.pos.x, n3.pos.y);
-      vertex(n4.pos.x, n4.pos.y);
+    // inicia el dibujo de la forma
+    beginShape();
 
-      // cierra la figura
-      endShape(CLOSE);
-    }
+    // define los cuatro vértices del cuadrilátero de la malla
+    vertex(n1.pos.x, n1.pos.y);
+    vertex(n2.pos.x, n2.pos.y);
+    vertex(n3.pos.x, n3.pos.y);
+    vertex(n4.pos.x, n4.pos.y);
+
+    // cierra la figura
+    endShape(CLOSE);
   }
-
-  // --- REGLAS AUTÓNOMAS DE LOS SIMBIONTES ---
-  for (let s of simbiontes) {
-    s.actualizar(volSuavizado);
-    s.mostrar();
-  }
-
-  // --- INTERFAZ ---
-  fill(255);
-  noStroke();
-  textSize(13);
-  text("SISTEMA GENERATIVO: ESTIGMERGIA Y FÍSICA", 20, 30);
-  text("1. MANTÉN MOUSE para succionar. ESPACIO para repeler.", 20, 50);
-  text("2. HABLA para inflar el tejido y alterar rutas nerviosas.", 20, 70);
-  text("3. Flechas Der/Izq para cambiar paleta base.", 20, 90);
-  
-  fill(0, 100, 100, volSuavizado * 300);
-  circle(25, 115, 10 + volSuavizado * 100);
-  fill(255);
-  text("Mic Input", 45, 119);
 }
+
+
+// --- REGLAS AUTÓNOMAS DE LOS SIMBIONTES ---
+// aquí se actualizan todos los agentes del sistema
+
+for (let s of simbiontes) {
+
+  // actualiza la lógica de movimiento del simbionte
+  // el volumen del micrófono afecta su velocidad
+  s.actualizar(volSuavizado);
+
+  // dibuja el simbionte en pantalla
+  s.mostrar();
+}
+
+
+// --- INTERFAZ ---
+// sección que dibuja la interfaz informativa del sistema
+
+// establece color blanco para el texto
+fill(255);
+
+// desactiva el borde
+noStroke();
+
+// tamaño del texto
+textSize(13);
+
+// título del sistema generativo
+text("SISTEMA GENERATIVO: ESTIGMERGIA Y FÍSICA", 20, 30);
+
+// instrucciones de interacción con el mouse
+text("1. MANTÉN MOUSE para succionar. ESPACIO para repeler.", 20, 50);
+
+// instrucciones de interacción con el micrófono
+text("2. HABLA para inflar el tejido y alterar rutas nerviosas.", 20, 70);
+
+// instrucciones de cambio de color
+text("3. Flechas Der/Izq para cambiar paleta base.", 20, 90);
+
+// color del indicador del micrófono
+fill(0, 100, 100, volSuavizado * 300);
+
+// círculo que crece según el volumen del micrófono
+circle(25, 115, 10 + volSuavizado * 100);
+
+// vuelve a color blanco para el texto
+fill(255);
+
+// etiqueta del indicador de micrófono
+text("Mic Input", 45, 119);
+}
+
 
 // --- CLASES DEL SISTEMA GENERATIVO ---
 
+
+// clase que representa cada nodo de la membrana
 class NodoVidrio {
+
+  // constructor que se ejecuta cuando se crea un nodo
   constructor(x, y, anillo, radioIdx) {
+
+    // posición original base del nodo
     this.origenBase = createVector(x, y);
+
+    // posición de origen dinámica que se moverá con ruido
     this.origen = createVector(x, y);
+
+    // posición actual del nodo
     this.pos = createVector(x, y);
+
+    // velocidad del nodo
     this.vel = createVector(0, 0);
+
+    // aceleración del nodo
     this.acc = createVector(0, 0);
+
+    // masa del nodo según el anillo
+    // los nodos interiores son más pesados
     this.masa = map(anillo, 0, anillos, 3, 1); 
+
+    // offsets de ruido para generar movimiento orgánico
     this.ruidoOffsetX = x * 0.01;
     this.ruidoOffsetY = y * 0.01;
     
-    // REGLA GENERATIVA: Rastro de las visitas
+    // energía acumulada en el nodo por paso de simbiontes
     this.cargaEnergia = 0; 
   }
 
+  // método que aplica una fuerza al nodo
   aplicarFuerza(f) {
+
+    // divide la fuerza por la masa (segunda ley de Newton)
     let fuerza = p5.Vector.div(f, this.masa);
+
+    // añade la fuerza a la aceleración
     this.acc.add(fuerza);
   }
 
+  // método que actualiza la física del nodo
   actualizar() {
+
+    // genera desplazamiento con ruido de Perlin
     let nx = map(noise(this.ruidoOffsetX, frameCount * 0.005), 0, 1, -20, 20);
     let ny = map(noise(this.ruidoOffsetY, frameCount * 0.005), 0, 1, -20, 20);
+
+    // mueve el origen base según el ruido
     this.origen.x = this.origenBase.x + nx;
     this.origen.y = this.origenBase.y + ny;
 
+    // calcula fuerza tipo resorte entre origen y posición
     let resorte = p5.Vector.sub(this.origen, this.pos);
+
+    // reduce la intensidad del resorte
     resorte.mult(0.08); 
+
+    // aplica la fuerza al nodo
     this.aplicarFuerza(resorte);
 
+    // integra movimiento (Motion 101)
     this.vel.add(this.acc);
+
+    // aplica fricción
     this.vel.mult(0.88); 
+
+    // actualiza la posición
     this.pos.add(this.vel);
+
+    // reinicia aceleración
     this.acc.mult(0);
     
-    // REGLA GENERATIVA: El rastro térmico se evapora con el tiempo
+    // reduce lentamente la energía acumulada (evaporación del rastro)
     this.cargaEnergia *= 0.95; 
   }
 }
 
+
+// clase que representa los agentes que recorren la red
 class Simbionte {
+
   constructor() {
+
+    // selecciona un anillo inicial aleatorio
     this.idxAnillo = floor(random(anillos));
+
+    // selecciona un radio inicial aleatorio
     this.idxRadio = floor(random(radios));
     
+    // nodo donde comienza el simbionte
     this.nodoActual = redNodos[this.idxAnillo][this.idxRadio];
+
+    // nodo destino inicial
     this.nodoDestino = this.nodoActual;
     
+    // parámetro de interpolación de movimiento
     this.t = 1; 
+
+    // velocidad base del simbionte
     this.velocidadBase = random(0.02, 0.06);
   }
 
+
   escogerDestino() {
-    // 1. Identificar nodos vecinos posibles (Sintaxis topológica)
+
+    // lista de posibles nodos vecinos
     let opciones = [];
     
+    // vecino exterior
     if (this.idxAnillo < anillos) opciones.push({a: this.idxAnillo + 1, r: this.idxRadio});
+
+    // vecino interior
     if (this.idxAnillo > 0) opciones.push({a: this.idxAnillo - 1, r: this.idxRadio});
+
+    // vecino radial siguiente
     opciones.push({a: this.idxAnillo, r: (this.idxRadio + 1) % radios});
+
+    // vecino radial anterior
     opciones.push({a: this.idxAnillo, r: (this.idxRadio - 1 + radios) % radios});
 
-    // 2. REGLA GENERATIVA DE DECISIÓN: Buscar el camino menos transitado
+
+    // busca la mejor opción según menor energía acumulada
     let mejorOpcion = opciones[0];
+
     let menorCarga = Infinity;
 
     for (let op of opciones) {
+
       let nodoCandidato = redNodos[op.a][op.r];
-      // Si el nodo está más "frío", se convierte en la mejor opción
+
+      // selecciona el nodo con menor carga energética
       if (nodoCandidato.cargaEnergia < menorCarga) {
+
         menorCarga = nodoCandidato.cargaEnergia;
+
         mejorOpcion = op;
       }
     }
 
-    // A veces, introducimos una pequeña mutación (aleatoriedad) para que no se queden atrapados
+    // introduce aleatoriedad para evitar rutas repetitivas
     if (random(1) < 0.15) {
       mejorOpcion = random(opciones);
     }
 
+    // actualiza el nodo destino
     this.idxAnillo = mejorOpcion.a;
+
     this.idxRadio = mejorOpcion.r;
     
     this.nodoDestino = redNodos[this.idxAnillo][this.idxRadio];
+
+    // reinicia interpolación
     this.t = 0; 
     
-    // Dejar rastro (Feromona/Calor) en el nuevo nodo
+    // deja rastro de energía en el nodo
     this.nodoDestino.cargaEnergia += 0.8; 
   }
 
+
   actualizar(vol) {
+
+    // si ya llegó al nodo destino
     if (this.t >= 1) {
+
       this.nodoActual = this.nodoDestino;
+
       this.escogerDestino();
+
     } else {
+
+      // calcula velocidad influenciada por el volumen
       let velocidadActual = this.velocidadBase + (vol * 0.8);
+
+      // avanza en la interpolación
       this.t += velocidadActual;
       
-      // Seguro para no pasarse del destino
+      // evita que supere el destino
       if (this.t > 1) this.t = 1;
     }
   }
 
+
   mostrar() {
+
+    // calcula posición interpolada entre nodos
     let posX = lerp(this.nodoActual.pos.x, this.nodoDestino.pos.x, this.t);
+
     let posY = lerp(this.nodoActual.pos.y, this.nodoDestino.pos.y, this.t);
 
+    // variación visual del brillo
     let brillo = 80 + sin(frameCount * 0.2) * 20; 
     
+    // halo exterior
     noFill();
     stroke(50, 20, 100, 40); 
     strokeWeight(10);
     point(posX, posY);
 
+    // núcleo brillante
     stroke(50, 0, 100, 100); 
     strokeWeight(3);
     point(posX, posY);
   }
 }
 
+
+// función que se ejecuta cuando se hace clic
 function mousePressed() {
+
+  // activa el micrófono solo una vez
   if (!audioActivo) {
+
     userStartAudio();
+
     mic.start();
+
     audioActivo = true;
   }
 }
 
+
+// función que detecta teclas presionadas
 function keyPressed() {
+
+  // flecha derecha cambia el color base
   if (keyCode === RIGHT_ARROW) colorBase = (colorBase + 45) % 360;
+
+  // flecha izquierda cambia el color base
   else if (keyCode === LEFT_ARROW) colorBase = (colorBase - 45 + 360) % 360;
 }
 ```
@@ -1043,5 +1184,6 @@ https://editor.p5js.org/Nikeal/sketches/DSwyZRCE1
 
 
 ## Bitácora de reflexión
+
 
 

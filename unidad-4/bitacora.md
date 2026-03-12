@@ -1184,6 +1184,16 @@ https://editor.p5js.org/Nikeal/sketches/DSwyZRCE1
 
 ## Bitácora de reflexión
 
+### Diagrama Conceptual
 
+<img width="953" height="809" alt="image" src="https://github.com/user-attachments/assets/656e6eb6-f5b1-4769-9c32-cde658f84e4b" />
 
+### ¿En dónde ves oportunidades?
 
+1. Una de las principales oportunidades de aplicación se encuentra en el desarrollo de experiencias visuales interactivas para videojuegos, instalaciones digitales o proyectos multimedia. Esto se puede utilizar para generar escenarios, efectos visuales, comportamientos de sistemas naturales o elementos del mundo de un videojuego que evolucionen de manera procedural.
+
+2. Otra aplicación está en el diseño procedural, es posible generar contenido de forma automática, como paisajes, texturas, comportamientos de personajes o simulaciones de ecosistemas dentro de experiencias digitales. Este tipo de técnicas permite crear mundos más complejos y variados sin necesidad de diseñar cada elemento manualmente y dando un desarrollo autonomo a este mismo.
+
+3. También veo oportunidades en el campo de las experiencias interactivas e instalaciones digitales, donde los sistemas generativos pueden responder a la interacción del usuario mediante dispositivos como micrófonos, sensores o cámaras. Esto permite desarrollar proyectos para exposiciones, eventos, museos o espacios interactivos donde el público participe en la experiencia visual o sonora.
+
+4. Por ultimo se me ocurre que los conceptos de simulación física, fuerzas y movimiento pueden aplicarse en el desarrollo de sistemas dinámicos dentro de videojuegos o aplicaciones interactivas, como comportamientos de partículas, simulaciones de fluidos, movimientos naturales de personajes o interacciones entre objetos dentro de un entorno virtual.

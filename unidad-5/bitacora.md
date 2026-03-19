@@ -156,5 +156,288 @@ Porque el cálculo matemático de la fuerza está aislado en su propia clase. El
 
 ## Bitácora de aplicación 
 
+Documenta el proceso completo:
+
+1. Concepto: 2-3 frases sobre qué ciclo de vida representarás y qué emoción o idea quieres comunicar.
+
+
+
+2. Bocetos: al menos 2 bocetos (pueden ser a mano) que muestren cómo imaginas la pieza antes de programarla.
+
+
+
+3. Mapa de decisiones: para cada elemento del sistema, explica la decisión de diseño: ¿Por qué esa emisión, esas fuerzas, esa condición de muerte, esa visualización, qué significa la interacción del usuario dentro del concepto?
+
+
+
+4. Implementación: enlace al código en el editor de p5.js + código fuente en la bitácora.
+
+```js
+let ecosistema;
+let mic;
+let audioIniciado = false;
+let zoff = 0; // Tiempo para el flujo del espacio
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+  
+  mic = new p5.AudioIn();
+  ecosistema = new Ecosistema();
+  
+  // Poblar el lienzo inicialmente
+  for(let i = 0; i < 30; i++) {
+    ecosistema.emitirLagrima(random(width), random(height));
+  }
+}
+
+function draw() {
+  blendMode(BLEND);
+  background(15, 10, 10, 40); // Rastro sutil para dar fluidez
+
+  let volumen = 0;
+  if (audioIniciado) {
+    volumen = mic.getLevel();
+  }
+
+  // El micrófono acelera las corrientes del éter
+  zoff += 0.003 + (volumen * 0.1);
+
+  blendMode(ADD); 
+  ecosistema.run(volumen);
+
+  // Emisión constante desde puntos aleatorios para evitar la "cinta transportadora"
+  if (frameCount % 30 === 0 && ecosistema.entidades.length < 90) {
+    ecosistema.emitirLagrima(random(width * 0.1, width * 0.9), height + 50);
+  }
+
+  // Interfaz
+  blendMode(BLEND);
+  fill(255, 60);
+  noStroke();
+  textSize(13);
+  text("MANTÉN MOUSE: Viento del Tiempo (Desgaste).", 20, 30);
+  text("HABLA: Altera las corrientes de maná.", 20, 50);
+  text("Entidades: " + ecosistema.entidades.length, 20, 70);
+}
+
+// ==========================================
+// CAPA DE ESTRUCTURA: GESTOR (EMISOR)
+// ==========================================
+class Ecosistema {
+  constructor() {
+    this.entidades = [];
+  }
+
+  emitirLagrima(x, y) {
+    this.entidades.push(new Lagrima(x, y));
+  }
+
+  emitirEstallido(x, y, hueBase) {
+    let cantidad = floor(random(5, 10));
+    for (let i = 0; i < cantidad; i++) {
+      this.entidades.push(new Fragmento(x, y, hueBase));
+    }
+  }
+
+  // NUEVO: Comportamiento de enjambre/red
+  dibujarConstelaciones() {
+    strokeWeight(1);
+    for (let i = 0; i < this.entidades.length; i++) {
+      for (let j = i + 1; j < this.entidades.length; j++) {
+        let e1 = this.entidades[i];
+        let e2 = this.entidades[j];
+        
+        // Solo conectar si ambas son Lágrimas (no conectamos polvo)
+        if (e1 instanceof Lagrima && e2 instanceof Lagrima) {
+          let d = dist(e1.pos.x, e1.pos.y, e2.pos.x, e2.pos.y);
+          if (d < 120) { // Distancia de resonancia
+            let opacidad = map(d, 0, 120, 80, 0); // Más cerca = línea más brillante
+            stroke(e1.hue, 50, 100, opacidad);
+            line(e1.pos.x, e1.pos.y, e2.pos.x, e2.pos.y);
+            
+            // Si están muy juntas, se atraen suavemente
+            if (d > 30) {
+              let atraccion = p5.Vector.sub(e2.pos, e1.pos);
+              atraccion.setMag(0.01);
+              e1.aplicarFuerza(atraccion);
+              e2.aplicarFuerza(atraccion.mult(-1));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  run(vol) {
+    // Dibujar hilos de conexión antes que las entidades
+    this.dibujarConstelaciones();
+
+    for (let i = this.entidades.length - 1; i >= 0; i--) {
+      let ent = this.entidades[i];
+
+      // INTERACCIÓN MOUSE
+      if (mouseIsPressed) {
+        let mouseVec = createVector(mouseX, mouseY);
+        let distMouse = p5.Vector.dist(ent.pos, mouseVec);
+        if (distMouse < 250) {
+          let viento = p5.Vector.sub(ent.pos, mouseVec);
+          viento.setMag(0.8);
+          ent.aplicarFuerza(viento);
+          ent.lifespan -= 3; // Envejecimiento drástico
+        }
+      }
+
+      ent.actualizar();
+      ent.mostrar(vol);
+
+      if (ent.isDead()) {
+        if (ent instanceof Lagrima) {
+          this.emitirEstallido(ent.pos.x, ent.pos.y, ent.hue);
+        }
+        this.entidades.splice(i, 1);
+      }
+    }
+  }
+}
+
+// ==========================================
+// CAPA DE FÍSICA: CLASE PADRE
+// ==========================================
+class EntidadVital {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = createVector(0, 0);
+    this.acc = createVector(0, 0);
+    this.masa = 1;
+    this.lifespan = random(200, 350); // Tiempo de vida variado
+  }
+
+  aplicarFuerza(fuerza) {
+    let f = p5.Vector.div(fuerza, this.masa);
+    this.acc.add(f);
+  }
+
+  actualizar() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+    this.lifespan -= 1;
+  }
+
+  isDead() {
+    return this.lifespan <= 0;
+  }
+}
+
+// ==========================================
+// SUBCLASE 1: LÁGRIMA (Vida y Nado)
+// ==========================================
+class Lagrima extends EntidadVital {
+  constructor(x, y) {
+    super(x, y);
+    this.masa = random(1.5, 3);
+    this.vel = p5.Vector.random2D().mult(0.5); // Nacen con velocidad en cualquier dirección
+    this.hue = random(180, 240); 
+    this.ruidoOffset = random(1000);
+    this.radioBase = this.masa * 8;
+  }
+
+  actualizar() {
+    // NUEVO: Navegación autónoma por Campo de Flujo (Flow Field)
+    let anguloCampo = noise(this.pos.x * 0.005, this.pos.y * 0.005, zoff) * TWO_PI * 4;
+    let corriente = p5.Vector.fromAngle(anguloCampo);
+    corriente.mult(0.04 * this.masa);
+    this.aplicarFuerza(corriente);
+    
+    // Tendencia muy suave a subir para no quedarse estancadas abajo
+    this.aplicarFuerza(createVector(0, -0.01));
+    
+    this.vel.limit(2); // Velocidad máxima para que no se descontrolen
+    super.actualizar();
+  }
+
+  mostrar(vol) {
+    push();
+    translate(this.pos.x, this.pos.y);
+    
+    noStroke();
+    
+    // Si están a punto de morir (últimos 50 frames), laten de advertencia
+    let parpadeoMuerte = 0;
+    if (this.lifespan < 50) {
+      parpadeoMuerte = sin(frameCount * 0.5) * 50;
+    }
+    
+    let alfa = map(this.lifespan, 0, 300, 0, 100);
+    fill(this.hue, 70, 100, alfa);
+
+    let deformacionAudio = vol * 80;
+    
+    beginShape();
+    for (let a = 0; a <= TWO_PI + 0.5; a += 0.5) {
+      let xoff = map(cos(a), -1, 1, 0, 1.5);
+      let yoff = map(sin(a), -1, 1, 0, 1.5);
+      
+      let ruido = noise(xoff + this.ruidoOffset, yoff + this.ruidoOffset, zoff);
+      // El radio suma la deformación de audio y el latido de muerte
+      let r = this.radioBase + map(ruido, 0, 1, -8 - deformacionAudio, 8 + deformacionAudio) + parpadeoMuerte;
+      
+      vertex(r * cos(a), r * sin(a));
+    }
+    endShape(CLOSE);
+
+    fill(255, alfa);
+    circle(0, 0, this.radioBase * 0.3);
+    pop();
+  }
+}
+
+// ==========================================
+// SUBCLASE 2: FRAGMENTO (Muerte y Caída)
+// ==========================================
+class Fragmento extends EntidadVital {
+  constructor(x, y, hueBase) {
+    super(x, y);
+    this.masa = random(0.5, 1.2);
+    this.vel = p5.Vector.random2D().mult(random(1, 4));
+    this.hue = hueBase + random(-20, 20);
+    this.lifespan = random(30, 80); 
+    this.angulo = random(TWO_PI);
+    this.velAngular = random(-0.2, 0.2);
+  }
+
+  actualizar() {
+    let gravedad = createVector(0, 0.2 * this.masa);
+    this.aplicarFuerza(gravedad);
+    
+    this.angulo += this.velAngular;
+    this.velAngular *= 0.95; // Fricción del aire sobre la rotación
+    
+    super.actualizar();
+  }
+
+  mostrar() {
+    push();
+    translate(this.pos.x, this.pos.y);
+    rotate(this.angulo);
+    
+    noStroke();
+    let alfa = map(this.lifespan, 0, 80, 0, 100);
+    fill((this.hue + 40) % 360, 60, 100, alfa); // Tonos dorados al morir
+    
+    beginShape();
+    vertex(0, -this.masa * 5);
+    vertex(this.masa * 3, this.masa * 2);
+    vertex(-this.masa * 2, this.masa * 4);
+    endShape(CLOSE);
+    pop();
+  }
+}
+```
+
+5. Capturas: al menos 3 capturas de momentos diferentes del ciclo de vida.
+
+
 
 ## Bitácora de reflexión

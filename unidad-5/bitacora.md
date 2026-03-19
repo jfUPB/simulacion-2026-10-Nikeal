@@ -36,7 +36,123 @@ Cada partícula se representa visualmente como un círculo con color y transpare
 ¿Cómo se conecta el “tiempo de vida” con la apariencia visual?
 El tiempo de vida se usa para controlar la transparencia. A medida que el lifespan disminuye, la partícula se vuelve más transparente hasta desaparecer.
 
-### aCTIVIDAD 2
+### Actividad 2
+
+Comparación con Example 4.2:
+
+¿Qué responsabilidades que antes estaban en draw() ahora están dentro de la clase Emitter?
+
+Responsabilidades trasladadas: En el Ejemplo 4.2, el ciclo principal draw() era el encargado absoluto de todo: instanciar cada nueva partícula, guardarla en el arreglo, recorrer ese arreglo al revés, llamar a las funciones de actualización y dibujo, y eliminar las partículas muertas con splice(). En el 4.4, todas estas tareas micro-administrativas se delegan a la clase ParticleSystem (o Emisor). El draw() ahora solo hace una cosa: decirle a los emisores que ejecuten su ciclo (run()).
+
+¿Cuál es la ventaja de encapsular la lógica de emisión en una clase separada?
+
+Ventaja de encapsular (El Emisor): La mayor ventaja es la modularidad y escalabilidad. Al encapsular la lógica, el emisor se convierte en una "caja negra" independiente. Esto te permite tener docenas de emisores distintos en la misma escena (una fogata aquí, una cascada allá, chispas de una explosión en otro lado) sin que sus partículas se mezclen y sin convertir tu código principal en un espagueti inmanejable.
+
+En este ejemplo hay un array de emitters. ¿Quién crea los emitters? ¿Quién crea las partículas dentro de cada emitter?
+
+Creación en cadena: El programa principal (el sketch global) es quien crea los Emisores y los almacena en un arreglo maestro (por ejemplo, cada vez que haces clic con el mouse). Luego, cada Emisor individual es responsable de crear las Partículas internamente y guardarlas en su propio sub-arreglo privado.
+
+Dibuja un diagrama que muestre la jerarquía: sketch → [emitters] → [partículas]. ¿Cuántos niveles de “colección” hay?
+
+Jerarquía de Colecciones: Hay exactamente dos niveles de colección en esta arquitectura (un arreglo dentro de otro arreglo).
+
+Nivel 0: Sketch (El mundo global)
+
+Nivel 1: Arreglo de [Emitters] (Colección gestionada por el mundo)
+
+Nivel 2: Arreglo de [Partículas] (Colección gestionada internamente por cada Emisor)
+
+Transferencia conceptual:
+
+Describe este ejemplo usando palabras que NO mencionen p5.js, JavaScript, ni ninguna herramienta específica. Usa solo términos como: entidad, estado, colección, emisor, ciclo de vida, fuerza.
+
+Para entender verdaderamente un sistema, debemos poder explicarlo sin depender del lenguaje de programación. Aquí tienes la descripción conceptual del modelo:
+
+El sistema se compone de una colección principal de emisores. Cada emisor funciona como un gestor localizado en el espacio que tiene la única responsabilidad de administrar una colección secundaria de entidades.
+
+A un ritmo constante, el emisor genera nuevas entidades y les asigna un estado inicial (una coordenada espacial y un impulso). Continuamente, el emisor orquesta a todas sus entidades activas: aplica fuerzas externas que modifican el estado dinámico de cada una (su trayectoria y aceleración) y reduce gradualmente su ciclo de vida. Cuando el ciclo de vida de una entidad se agota por completo, el emisor se encarga de destruirla y liberarla de la memoria del sistema, garantizando que el ecosistema se mantenga estable y eficiente.
+
+### Actividad 3
+
+¿Qué tienen en común las subclases de partículas? ¿Qué tienen de diferente?
+
+Gracias a la herencia (class Confetti extends Particle), todas las subclases comparten el estado físico y vital (posición, velocidad, aceleración y lifespan). También comparten la capa de comportamiento base, es decir, el método update() que aplica el patrón Motion 101 y la condición de muerte isDead().
+
+Difieren en la capa de visualización y en pequeñas alteraciones físicas. Por ejemplo, la subclase Confetti sobrescribe el método display() para dibujarse como un cuadrado rotatorio en lugar de un círculo. Para lograr esa rotación, también añade propiedades únicas a su clase (como un ángulo).
+
+¿Por qué es importante que el Emitter no necesite saber qué tipo específico de partícula está gestionando? Explica esto con tus propias palabras.
+
+¿Por qué es importante que el Emitter no sepa qué tipo específico gestiona?
+Esto es el núcleo del Polimorfismo. Si el Emisor tuviera que saber exactamente qué partícula está actualizando, el código estaría lleno de condicionales gigantescos (ej. si es chispa haz esto, si es humo haz esto otro).
+Al tratar a todas las entidades genéricamente como "Partículas", el Emisor simplemente itera por su arreglo y les grita: "¡Actualícense y muéstrense!" (p.update(); p.display();). Cada partícula "sabe" cómo dibujarse a sí misma. Esto permite que el sistema sea infinitamente escalable. En un proyecto de entretenimiento digital complejo, un solo emisor puede lanzar escombros, fuego y humo simultáneamente sin que su lógica de gestión colapse.
+
+Si mañana quisieras agregar un tercer tipo de partícula, ¿Qué tendrías que crear y qué NO tendrías que modificar?
+
+¿Qué tendrías que crear? 1. Una nueva clase (ej. class Triangulo extends Particle).
+2. Sobrescribir su método display() para que se dibuje de forma distinta.
+3. Una pequeña modificación en el punto de creación del Emisor (ej. un random() para decidir si genera una partícula normal, un Confetti o un Triángulo).
+
+¿Qué NO tendrías que modificar? Absolutamente nada de la lógica de gestión. No tocas el bucle inverso que elimina entidades, no modificas la física base (Motion 101), ni alteras cómo el Emisor recorre el arreglo. El motor del sistema permanece ciego a la nueva estética.
+
+Compara con Example 4.2: ¿Cambió la lógica del Emitter? ¿Cambió la lógica de muerte? ¿Qué capa del sistema se modificó y cuáles permanecieron intactas?
+
+¿Cambió la lógica del Emitter o la lógica de muerte? No. La lógica de gestión (recorrer el arreglo al revés, usar splice()) y la lógica de muerte (verificar si lifespan < 0) son idénticas al Ejemplo 4.2.
+
+¿Qué capa se modificó y cuáles quedaron intactas?
+
+Intacta: La Capa de Estructura (el Emisor gestionando la memoria) y la base de la Capa de Comportamiento (la física).
+
+Modificada: La Capa de Visualización (gracias a que cada subclase dibuja algo distinto) y la forma en que el Emisor instancia las partículas (decidiendo aleatoriamente qué subclase meter al arreglo).
+
+### Actividad 4
+
+Entendido. Para que la información te quede perfecta para copiar y organizar en tu bitácora, aquí tienes la Actividad 04 estructurada estrictamente pregunta por pregunta:
+
+### Fuerzas globales vs. locales
+
+**Pregunta:** En Example 4.6, ¿Dónde se define la gravedad? ¿Quién la aplica a las partículas? ¿Es una fuerza global o local?
+**Respuesta:** La gravedad se define en el entorno principal (usualmente al inicio del `draw()` o como variable global). Es el ciclo principal el que se la pasa al `ParticleSystem`, y este sistema itera sobre el arreglo para aplicarla a cada partícula mediante el método `applyForce()`. Es una fuerza **global**, ya que afecta a todas las partículas por igual en cada frame.
+
+**Pregunta:** En Example 4.7, ¿Qué diferencia hay entre la gravedad y la fuerza del repeller? ¿Dónde “vive” cada una?
+**Respuesta:** La principal diferencia es su alcance y cálculo. La gravedad "vive" en el entorno general y es constante (global). La fuerza del repeller "vive" dentro del objeto `Repeller` y se calcula de forma dinámica y **local** para cada partícula, dependiendo de dónde se encuentre dicha partícula en relación al repulsor.
+
+**Pregunta:** La fuerza del repeller depende de la distancia entre la partícula y el repeller. ¿Qué principio físico se está modelando?
+**Respuesta:** Se está modelando la **Ley de Gravitación Universal de Newton** (o leyes inversocuadráticas similares, como la fuerza electrostática de Coulomb). El principio establece que la magnitud de la fuerza es inversamente proporcional al cuadrado de la distancia ($F = \frac{G \cdot m_1 \cdot m_2}{d^2}$). A menor distancia, la fuerza de repulsión se dispara.
+
+**Pregunta:** ¿Cambió la clase Particle entre Example 4.6 y 4.7? ¿Qué implica esto sobre la separación entre comportamiento de la partícula y fuerzas externas?
+**Respuesta:** No, la clase `Particle` permaneció exactamente igual. Esto implica que hay una **separación perfecta de responsabilidades (encapsulamiento)**. La partícula solo necesita saber cómo sumar un vector a su aceleración a través de su método `applyForce()`; no le importa de dónde viene la fuerza ni quién la calculó.
+
+---
+
+Tabla comparativa
+
+| Aspecto | 4.2 | 4.4 | 4.5 | 4.6 | 4.7 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **¿Quién crea partículas?** | Bucle `draw()` | `ParticleSystem` | `ParticleSystem` | `ParticleSystem` | `ParticleSystem` |
+| **¿Hay clase Emitter?** | No | Sí | Sí | Sí | Sí |
+| **¿Hay herencia?** | No | No | Sí | No | No |
+| **¿Hay fuerzas externas?** | No | No | No | Sí | Sí |
+| **¿Hay interacción entre elementos?**| No | No | No | No | Sí |
+| **¿Cómo mueren las partículas?** | `lifespan <= 0` | `lifespan <= 0` | `lifespan <= 0` | `lifespan <= 0` | `lifespan <= 0` |
+
+---
+
+Modificación quirúrgica
+
+**Modificación elegida:** (b) Cambiar las fuerzas sin cambiar la estructura ni la visualización (Transformar el Repulsor en un Atractor).
+
+**Pregunta:** ¿Qué líneas de código tocaste?
+Modifiqué la línea donde se normaliza y se define la dirección del vector de fuerza calculada. Le agregué una multiplicación por `-1` para invertir el vector: `dir.normalize(); dir.mult(-1);`.
+
+**Pregunta:** ¿Qué clases/funciones modificaste?
+Modifiqué únicamente el método `repel(particle)` dentro de la clase `Repeller`.
+
+**Pregunta:** ¿Qué partes del programa NO necesitaste modificar?
+No tuve que modificar la clase `Particle` (ni su física ni su visualización), tampoco la clase `ParticleSystem`, ni la lógica de iteración dentro del `draw()`.
+
+**Pregunta:** ¿Por qué fue posible hacer este cambio sin afectar las demás capas?
+Porque el cálculo matemático de la fuerza está aislado en su propia clase. El sistema completo funciona pasando vectores resultantes de un lado a otro. Al cambiar la ecuación en el origen (el Repulsor), las demás capas simplemente reciben un vector diferente y lo procesan con la misma física (Motion 101) de siempre, demostrando un diseño de software altamente modular.
+
 
 ## Bitácora de aplicación 
 

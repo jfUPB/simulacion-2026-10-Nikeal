@@ -440,4 +440,6 @@ class Fragmento extends EntidadVital {
 
 
 
+https://editor.p5js.org/Nikeal/sketches/YZ7mydzkZ
+
 ## Bitácora de reflexión

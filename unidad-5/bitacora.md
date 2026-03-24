@@ -166,23 +166,278 @@ Esta pieza interactiva representa el ciclo de vida estelar, donde las estrellas 
 
 2. Bocetos: al menos 2 bocetos (pueden ser a mano) que muestren cómo imaginas la pieza antes de programarla.
 
-
+<img width="544" height="651" alt="image" src="https://github.com/user-attachments/assets/41fe2e55-30bb-4747-9086-ca4f62d43328" />
 
 3. Mapa de decisiones: para cada elemento del sistema, explica la decisión de diseño: ¿Por qué esa emisión, esas fuerzas, esa condición de muerte, esa visualización, qué significa la interacción del usuario dentro del concepto?
 
+* 1. El Emisor: 
+* Elemento: Generación en la base (`height + 30`) y flujo ascendente.
+* Decisión de Diseño: Una gravedad inversa que empuja a las estrellas hacia el infinito superior. Representa el surgimiento de la materia desde la nada con el flujo constante que simboliza que el universo no se detiene ante la muerte; es un ciclo de renovacion que no se detiene ante nada, que garantiza que, mientras unas estrellas se apagan en tus manos, otras ya están naciendo, mostrando el infinito frente a lo insignificante del individuo.
 
+* 2. Las Fuerzas:
+* Elemento: Campo de flujo (`noise`) cuya velocidad aumenta con el volumen del micrófono.
+* Decisión de Diseño: Sustituir el movimiento lineal por corrientes orgánicas y caóticas. El ruido Perlin representa que el espacio no es un vacío muerto, sino un fluido con memoria. Al vincular la voz al "viento cósmico", el usuario se convierte en el **catalizador del caos**. El silencio permite que las estrellas sigan su curso natural, pero el ruido humano agita el éter, obligándolas a bailar con una desesperación que ellas no eligieron. Es la representación de cómo fuerzas externas e incontrolables dictan nuestro camino.
+
+### 3. Las Constelaciones: El Vínculo Atómico
+* **Elemento:** Líneas de luz y fuerzas de atracción por proximidad.
+* **Decisión de Diseño:** Implementar **cohesión y comportamiento emergente**.
+* **El porqué del porqué:** Una estrella aislada es un punto perdido; una constelación es un intento de **orden frente al caos**. Las líneas representan la necesidad intrínseca de conexión. La decisión de que se atraigan suavemente imita la gravedad, pero narrativamente simboliza el consuelo de no estar solo en la inmensidad. Sin embargo, estas conexiones son frágiles y desaparecen tan pronto como una de las partes se extingue.
+
+### 4. La Visualización: Esplendor y Deformación
+* **Elemento:** Geometría variable que vibra y crece con el sonido.
+* **Decisión de Diseño:** Estrellas que se expanden y brillan más fuerte según el volumen (`expansion = vol * 120`).
+* **El porqué del porqué:** Aquí aplicas tu concepto central: **brillar con intensidad antes de fragmentarse**. Al hablar, el usuario inyecta energía a la estrella, haciéndola lucir más "viva" y espectacular. Visualmente, el brillo máximo representa ese "esplendor desesperado" que mencionas; es la belleza que florece justo cuando el sistema está bajo más presión.
+
+### 5. Condición de Muerte: El Ocaso Dorado (Supernova)
+* **Elemento:** Cambio de HUE (Azul a Rojo/Dorado) y estallido en `Fragmentos`.
+* **Decisión de Diseño:** El color como cronómetro de la **entropía**.
+* **El porqué del porqué:** El paso del cian frío al dorado cálido es el indicador visual de que la estrella ha llegado a su límite de vida. Los fragmentos finales (el polvo estelar) son el residuo melancólico de la estructura organizada. Esta fragmentación en el "vacío infinito" refuerza la idea de que todo lo que brilla está destinado a romperse, dejando solo un rastro de luz que pronto se desvanece.
+
+### 6. Interacción: La Paradoja del Observador (Click)
+* **Elemento:** Pozo gravitacional que succiona estrellas y resta vida (`lifespan -= 3.5`).
+* **Decisión de Diseño:** Una mecánica de control con **costo existencial**.
+* **El porqué del porqué:** Esta es la pieza clave de tu narrativa. El usuario, en su afán de "poseer" la belleza o formar la constelación perfecta con el mouse, termina **consumiendo la vida de los astros**. Representa lo insignificante y a la vez destructivo que puede ser el ser humano: en el intento de acercarnos a lo divino (las estrellas), aceleramos su fin. Es una interacción agridulce donde el control es sinónimo de pérdida.
 
 4. Implementación: enlace al código en el editor de p5.js + código fuente en la bitácora.
 
-https://editor.p5js.org/Nikeal/sketches/YZ7mydzkZ
+https://editor.p5js.org/Nikeal/sketches/1dUzZFB4L
 
 Clase Ecosistema
 ```js
+class Ecosistema {
+  constructor() {
+    this.entidades = [];
+  }
 
+  emitirLagrima(x, y) {
+    this.entidades.push(new Lagrima(x, y));
+  }
+
+  emitirEstallido(x, y, hueBase) {
+    let cantidad = floor(random(5, 10));
+    for (let i = 0; i < cantidad; i++) {
+      this.entidades.push(new Fragmento(x, y, hueBase));
+    }
+  }
+
+  dibujarConstelaciones() {
+    for (let i = 0; i < this.entidades.length; i++) {
+      for (let j = i + 1; j < this.entidades.length; j++) {
+        let e1 = this.entidades[i];
+        let e2 = this.entidades[j];
+        if (e1 instanceof Lagrima && e2 instanceof Lagrima) {
+          let d = dist(e1.pos.x, e1.pos.y, e2.pos.x, e2.pos.y);
+          if (d < 120) {
+            let opacidad = map(d, 0, 120, 120, 0);
+            stroke(e1.hue, 50, 100, opacidad);
+            strokeWeight(map(d, 0, 120, 1.5, 0.1));
+            line(e1.pos.x, e1.pos.y, e2.pos.x, e2.pos.y);
+            
+            if (d > 30) {
+              let atraccion = p5.Vector.sub(e2.pos, e1.pos).setMag(0.02);
+              e1.aplicarFuerza(atraccion);
+              e2.aplicarFuerza(atraccion.mult(-1));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  run(vol) {
+    this.dibujarConstelaciones();
+
+    for (let i = this.entidades.length - 1; i >= 0; i--) {
+      let ent = this.entidades[i];
+
+      // MECÁNICA: POZO GRAVITACIONAL ACTIVO SOLO CON CLIC
+      if (mouseIsPressed) {
+        let mouseVec = createVector(mouseX, mouseY);
+        let d = p5.Vector.dist(ent.pos, mouseVec);
+        
+        if (d < 300) { // Radio de alcance un poco más amplio
+          let atraccionMouse = p5.Vector.sub(mouseVec, ent.pos);
+          let fuerzaMag = map(d, 0, 300, 2.5, 0.1, true);
+          atraccionMouse.setMag(fuerzaMag);
+          
+          ent.aplicarFuerza(atraccionMouse);
+          
+          // Robo de vida (solo ocurre mientras mantienes el clic)
+          ent.lifespan -= 3.5; 
+          ent.vel.mult(0.96); // Las frena un poco para que se sientan "atrapadas"
+        }
+      }
+
+      ent.actualizar(vol);
+      ent.mostrar(vol);
+
+      if (ent.isDead()) {
+        if (ent instanceof Lagrima) this.emitirEstallido(ent.pos.x, ent.pos.y, ent.hue);
+        this.entidades.splice(i, 1);
+      }
+    }
+  }
+}
+```
+
+Clase Entidades
+```js
+class EntidadVital {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = createVector(0, 0);
+    this.acc = createVector(0, 0);
+    this.masa = 1;
+    this.lifespan = random(350, 550);
+  }
+
+  aplicarFuerza(fuerza) {
+    let f = p5.Vector.div(fuerza, this.masa);
+    this.acc.add(f);
+  }
+
+  actualizar() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+    this.lifespan -= 1;
+  }
+
+  isDead() { return this.lifespan <= 0; }
+}
+
+class Lagrima extends EntidadVital {
+  constructor(x, y) {
+    super(x, y);
+    this.masa = random(1.5, 3);
+    this.hueBase = random(180, 240);
+    this.hue = this.hueBase;
+    this.ruidoOffset = random(1000);
+    this.radioBase = this.masa * 8;
+  }
+
+  actualizar(vol) {
+    let angulo = noise(this.pos.x * 0.005, this.pos.y * 0.005, zoff) * TWO_PI * 4;
+    let corriente = p5.Vector.fromAngle(angulo);
+    corriente.mult(0.04 * this.masa + (vol * 2.5));
+    this.aplicarFuerza(corriente);
+    this.aplicarFuerza(createVector(0, -vol * 0.8));
+    this.vel.limit(1.8 + (vol * 10)); 
+    super.actualizar();
+  }
+
+  mostrar(vol) {
+    push();
+    translate(this.pos.x, this.pos.y);
+    let alfa = map(this.lifespan, 0, 300, 0, 100);
+    
+    // Si la vida es baja, el color se torna cálido (desgaste)
+    if (this.lifespan < 120) {
+      this.hue = lerp(this.hue, 20, 0.04); 
+    } else {
+      this.hue = lerp(this.hue, this.hueBase, 0.01);
+    }
+    
+    fill(this.hue, 80, 100, alfa + (vol * 150));
+    noStroke();
+    let expansion = vol * 120; 
+    beginShape();
+    for (let a = 0; a <= TWO_PI + 0.5; a += 0.5) {
+      let r = this.radioBase + expansion + map(noise(a, zoff), 0, 1, -4, 4);
+      vertex(r * cos(a), r * sin(a));
+    }
+    endShape(CLOSE);
+    fill(255, alfa + 50);
+    circle(0, 0, this.radioBase * 0.4);
+    pop();
+  }
+}
+
+class Fragmento extends EntidadVital {
+  constructor(x, y, hueBase) {
+    super(x, y);
+    this.masa = random(0.5, 1.2);
+    this.vel = p5.Vector.random2D().mult(random(2, 5));
+    this.hue = hueBase + random(-20, 20);
+    this.lifespan = 80;
+  }
+  actualizar() {
+    this.aplicarFuerza(createVector(0, 0.15));
+    this.vel.mult(0.97);
+    super.actualizar();
+  }
+  mostrar() {
+    push();
+    translate(this.pos.x, this.pos.y);
+    let alfa = map(this.lifespan, 0, 80, 0, 100);
+    fill((this.hue + 40) % 360, 60, 100, alfa);
+    noStroke();
+    triangle(-2, -2, 2, -2, 0, 4);
+    pop();
+  }
+}
+```
+
+Clase sketch
+```js
+let ecosistema, mic, zoff = 0;
+let audioActivo = false;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+  mic = new p5.AudioIn();
+  ecosistema = new Ecosistema();
+  for(let i = 0; i < 30; i++) ecosistema.emitirLagrima(random(width), random(height));
+}
+
+function mousePressed() {
+  if (!audioActivo) {
+    userStartAudio();
+    mic.start();
+    audioActivo = true;
+  }
+}
+
+function draw() {
+  blendMode(BLEND);
+  background(15, 10, 10, 45);
+
+  let vol = audioActivo ? map(mic.getLevel(), 0, 0.1, 0, 1, true) : 0;
+  zoff += 0.005 + (vol * 0.1);
+
+  blendMode(ADD); 
+  ecosistema.run(vol);
+
+  if (frameCount % 45 === 0 && ecosistema.entidades.length < 90) {
+    ecosistema.emitirLagrima(random(width), height + 30);
+  }
+
+  blendMode(BLEND);
+  fill(255, 60);
+  noStroke();
+  textSize(12);
+  text(audioActivo ? "AUDIO ON" : "CLICK PARA ACTIVAR", 25, 35);
+  
+  // Monitor de volumen
+  stroke(255, 20);
+  noFill();
+  rect(25, 45, 100, 4);
+  fill(180, 100, 100);
+  noStroke();
+  rect(25, 45, vol * 100, 4);
+  
+  fill(255, 40);
+  text("MANTÉN CLICK: Pozo gravitacional (Conssume vida).", 25, 70);
+}
 ```
 
 5. Capturas: al menos 3 capturas de momentos diferentes del ciclo de vida.
 
+<img width="785" height="770" alt="image" src="https://github.com/user-attachments/assets/1c3d15aa-ba18-4bb1-a325-aa62f551dd26" />
+<img width="784" height="769" alt="image" src="https://github.com/user-attachments/assets/f129cfab-4078-4916-9e69-ab853e03cf8a" />
+<img width="787" height="774" alt="image" src="https://github.com/user-attachments/assets/739aa014-16e6-4a83-889e-db674fff436c" />
 
 
 ## Bitácora de reflexión
+// https://editor.p5js.org/Nikeal/sketches/YZ7mydzkZ

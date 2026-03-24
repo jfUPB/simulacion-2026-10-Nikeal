@@ -178,7 +178,7 @@ Esta pieza interactiva representa el ciclo de vida estelar, donde las estrellas 
 * Elemento: Campo de flujo (`noise`) cuya velocidad aumenta con el volumen del micrófono.
 * Decisión de Diseño: Sustituir el movimiento lineal por corrientes orgánicas y caóticas. El ruido Perlin representa que el espacio no es un vacío muerto, sino un fluido con memoria. Al vincular la voz al "viento cósmico", el usuario se convierte en el **catalizador del caos**. El silencio permite que las estrellas sigan su curso natural, pero el ruido humano agita el éter, obligándolas a bailar con una desesperación que ellas no eligieron. Es la representación de cómo fuerzas externas e incontrolables dictan nuestro camino.
 
-### 3. Las Constelaciones: El Vínculo Atómico
+* 3. Las Constelaciones (estrellas)
 * **Elemento:** Líneas de luz y fuerzas de atracción por proximidad.
 * **Decisión de Diseño:** Implementar **cohesión y comportamiento emergente**.
 * **El porqué del porqué:** Una estrella aislada es un punto perdido; una constelación es un intento de **orden frente al caos**. Las líneas representan la necesidad intrínseca de conexión. La decisión de que se atraigan suavemente imita la gravedad, pero narrativamente simboliza el consuelo de no estar solo en la inmensidad. Sin embargo, estas conexiones son frágiles y desaparecen tan pronto como una de las partes se extingue.

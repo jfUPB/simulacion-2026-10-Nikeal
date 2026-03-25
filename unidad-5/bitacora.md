@@ -179,16 +179,23 @@ Esta pieza interactiva representa el ciclo de vida estelar, donde las estrellas 
 * Decisión de Diseño: Sustituir el movimiento lineal por corrientes orgánicas y caóticas. El ruido Perlin representa que el espacio no es un vacío muerto, sino un fluido con memoria. Al vincular la voz al "viento cósmico", el usuario se convierte en el **catalizador del caos**. El silencio permite que las estrellas sigan su curso natural, pero el ruido humano agita el éter, obligándolas a bailar con una desesperación que ellas no eligieron. Es la representación de cómo fuerzas externas e incontrolables dictan nuestro camino.
 
 * 3. Las Constelaciones (estrellas)
-* **Elemento:** Líneas de luz y fuerzas de atracción por proximidad.
-* **Decisión de Diseño:** Implementar **cohesión y comportamiento emergente**.
-* **El porqué del porqué:** Una estrella aislada es un punto perdido; una constelación es un intento de **orden frente al caos**. Las líneas representan la necesidad intrínseca de conexión. La decisión de que se atraigan suavemente imita la gravedad, pero narrativamente simboliza el consuelo de no estar solo en la inmensidad. Sin embargo, estas conexiones son frágiles y desaparecen tan pronto como una de las partes se extingue.
+* Elemento: Líneas de luz y fuerza de atracción por proximidad.
+* Decisión de Diseño: Generar conexiones dinámicas según proximidad, dandole un comportamiento mas emergente a los agentes; una estrella sola no dice mucho, pero cuando se conecta con otras empieza a formar algo reconocible. Las líneas aparecen cuando están cerca, como una forma natural de agruparse y representan esa necesidad de conexión. No es algo fijo ni permanente: las conexiones cambian todo el tiempo, simboliza el consuelo de no estar solo en la inmensidad. Sin embargo, estas conexiones son frágiles y desaparecen tan pronto como una de las partes se extingue o se aleja.
 
-### 4. La Visualización: Esplendor y Deformación
-* **Elemento:** Geometría variable que vibra y crece con el sonido.
-* **Decisión de Diseño:** Estrellas que se expanden y brillan más fuerte según el volumen (`expansion = vol * 120`).
-* **El porqué del porqué:** Aquí aplicas tu concepto central: **brillar con intensidad antes de fragmentarse**. Al hablar, el usuario inyecta energía a la estrella, haciéndola lucir más "viva" y espectacular. Visualmente, el brillo máximo representa ese "esplendor desesperado" que mencionas; es la belleza que florece justo cuando el sistema está bajo más presión.
+* 4. Visualización: brillo y deformaciön
+* Elemento: Cambio de tamaño y brillo según el volumen (expansion = vol * 120).
+* Decisión de Diseño:  El sonido del usuario afecta directamente cómo se ven las estrellas. Cuando hay más volumen, crecen y brillan más; cuando hay silencio, vuelven a un estado más estable. Esto hace que el sistema se sienta vivo y reactivo, la idea es que el usuario se convierta en un "Dios" o persona externa que afecte al sistema con sus interacciones, en este caso "estresa" o estimula a los agentes del sistema con el sonido irrumpiendo en la paz del mismo.
 
-### 5. Condición de Muerte: El Ocaso Dorado (Supernova)
+* 5. Condición de muerte (supernova)
+
+Elemento: Cambio de color y fragmentación en partículas.
+Decisión de Diseño: Transición de color para indicar el final del ciclo.
+
+Por qué:
+Las estrellas no duran para siempre. A medida que se acercan a su fin, cambian de color hasta desaparecer en fragmentos.
+Es una forma visual simple de mostrar el ciclo completo: nacen, evolucionan y terminan. Los fragmentos quedan como rastro, pero no duran mucho, reforzando la idea de que todo es temporal.
+
+* 5. Condición de Muerte: El Ocaso Dorado (Supernova)
 * **Elemento:** Cambio de HUE (Azul a Rojo/Dorado) y estallido en `Fragmentos`.
 * **Decisión de Diseño:** El color como cronómetro de la **entropía**.
 * **El porqué del porqué:** El paso del cian frío al dorado cálido es el indicador visual de que la estrella ha llegado a su límite de vida. Los fragmentos finales (el polvo estelar) son el residuo melancólico de la estructura organizada. Esta fragmentación en el "vacío infinito" refuerza la idea de que todo lo que brilla está destinado a romperse, dejando solo un rastro de luz que pronto se desvanece.

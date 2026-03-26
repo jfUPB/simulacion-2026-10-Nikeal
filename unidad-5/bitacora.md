@@ -108,7 +108,7 @@ Modificada: La Capa de Visualización (gracias a que cada subclase dibuja algo d
 
 Entendido. Para que la información te quede perfecta para copiar y organizar en tu bitácora, aquí tienes la Actividad 04 estructurada estrictamente pregunta por pregunta:
 
-### Fuerzas globales vs. locales
+- Fuerzas globales vs. locales
 
 **Pregunta:** En Example 4.6, ¿Dónde se define la gravedad? ¿Quién la aplica a las partículas? ¿Es una fuerza global o local?
 **Respuesta:** La gravedad se define en el entorno principal (usualmente al inicio del `draw()` o como variable global). Es el ciclo principal el que se la pasa al `ParticleSystem`, y este sistema itera sobre el arreglo para aplicarla a cada partícula mediante el método `applyForce()`. Es una fuerza **global**, ya que afecta a todas las partículas por igual en cada frame.

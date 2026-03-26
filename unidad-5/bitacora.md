@@ -170,40 +170,32 @@ Esta pieza interactiva representa el ciclo de vida estelar, donde las estrellas 
 
 3. Mapa de decisiones: para cada elemento del sistema, explica la decisión de diseño: ¿Por qué esa emisión, esas fuerzas, esa condición de muerte, esa visualización, qué significa la interacción del usuario dentro del concepto?
 
+* Proposito: Ecos y supernovas, la pieza se plantea como una metáfora visual sobre la insignificancia del ser ante la inmensidad del cosmos o la vida en general, explorando la paradoja de lo fugaz: la idea de que la vida alcanza su belleza más sincera justo cuando reconoce su propia finitud. A través de este sistema, confrontamos la naturaleza humana en su faceta más ambivalente; somos observadores capaces de otorgar brillo a las estrellas con nuestra voz perturbando su "paz", pero también agentes destructivos que, en el afán de poseer y controlar la belleza mediante el pozo gravitacional (click), aceleramos inevitablemente su muerte. Es un recordatorio de que nuestras acciones, por pequeñas que parezcan, tienen un peso real en un universo que no se detiene,  y pueden afectar de maneras inimaginables sobre otras cosas o personas.
+
 * 1. El Emisor: 
 * Elemento: Generación en la base (`height + 30`) y flujo ascendente.
-* Decisión de Diseño: Una gravedad inversa que empuja a las estrellas hacia el infinito superior. Representa el surgimiento de la materia desde la nada con el flujo constante que simboliza que el universo no se detiene ante la muerte; es un ciclo de renovacion que no se detiene ante nada, que garantiza que, mientras unas estrellas se apagan en tus manos, otras ya están naciendo, mostrando el infinito frente a lo insignificante del individuo.
+* Decisión de Diseño: Una gravedad inversa que empuja a las estrellas hacia el infinito superior. Representa el surgimiento de la materia desde la nada con el flujo constante que simboliza que el universo no se detiene ante la muerte; es un ciclo de renovacion que sigue sin parar, que garantiza que, mientras unas estrellas se apagan en tus manos, otras ya están naciendo, mostrando el infinito frente a lo insignificante del individuo.
 
-* 2. Las Fuerzas:
+* 2. Las Fuerzas e interaccion 1:
 * Elemento: Campo de flujo (`noise`) cuya velocidad aumenta con el volumen del micrófono.
-* Decisión de Diseño: Sustituir el movimiento lineal por corrientes orgánicas y caóticas. El ruido Perlin representa que el espacio no es un vacío muerto, sino un fluido con memoria. Al vincular la voz al "viento cósmico", el usuario se convierte en el **catalizador del caos**. El silencio permite que las estrellas sigan su curso natural, pero el ruido humano agita el éter, obligándolas a bailar con una desesperación que ellas no eligieron. Es la representación de cómo fuerzas externas e incontrolables dictan nuestro camino.
+* Decisión de Diseño: Sustituir el movimiento lineal por corrientes orgánicas o mas caóticas (con el sonido). El ruido Perlin representa que el espacio no es un vacío muerto, sino un fluido con "vida propia". Al vincular la voz a las fuerzas, el usuario se convierte en el un ser que perturba la paz de estas criaturas. El silencio permite que las estrellas sigan su curso natural, pero el ruido humano agita estas fuerzas, obligándolas a "bailar" con una desesperación que ellas no eligieron. Es la representación de cómo fuerzas externas e incontrolables dictan nuestro camino en ocasiones.
 
-* 3. Las Constelaciones (estrellas)
-* Elemento: Líneas de luz y fuerza de atracción por proximidad.
-* Decisión de Diseño: Generar conexiones dinámicas según proximidad, dandole un comportamiento mas emergente a los agentes; una estrella sola no dice mucho, pero cuando se conecta con otras empieza a formar algo reconocible. Las líneas aparecen cuando están cerca, como una forma natural de agruparse y representan esa necesidad de conexión. No es algo fijo ni permanente: las conexiones cambian todo el tiempo, simboliza el consuelo de no estar solo en la inmensidad. Sin embargo, estas conexiones son frágiles y desaparecen tan pronto como una de las partes se extingue o se aleja.
-
-* 4. Visualización: brillo y deformaciön
+* 3. Visualización: brillo y deformaciön (relacionado con la interaccion 1)
 * Elemento: Cambio de tamaño y brillo según el volumen (expansion = vol * 120).
 * Decisión de Diseño:  El sonido del usuario afecta directamente cómo se ven las estrellas. Cuando hay más volumen, crecen y brillan más; cuando hay silencio, vuelven a un estado más estable. Esto hace que el sistema se sienta vivo y reactivo, la idea es que el usuario se convierta en un "Dios" o persona externa que afecte al sistema con sus interacciones, en este caso "estresa" o estimula a los agentes del sistema con el sonido irrumpiendo en la paz del mismo.
 
-* 5. Condición de muerte (supernova)
+* 4. Las Constelaciones (estrellas)
+* Elemento: Líneas de luz y fuerza de atracción por proximidad.
+* Decisión de Diseño: Generan conexiones dinámicas según proximidad, dandole un comportamiento mas emergente a los agentes; una estrella sola no dice mucho, pero cuando se conecta con otras empieza a formar algo reconocible (como las relaciones humanas). Las líneas aparecen cuando están cerca, como una forma natural de agruparse y representan esa necesidad de conexión. No es algo fijo ni permanente: las conexiones cambian todo el tiempo, simboliza el consuelo de no estar solo en la inmensidad. Sin embargo, estas conexiones son frágiles y desaparecen tan pronto como una de las partes se extingue o se aleja.
 
-Elemento: Cambio de color y fragmentación en partículas.
-Decisión de Diseño: Transición de color para indicar el final del ciclo.
+* 5. Condición de muerte
+* Elemento: Cambio de color y fragmentación en partículas.
+* Decisión de Diseño: Transición de color para indicar el final del ciclo. Las estrellas no duran para siempre. A medida que se acercan a su fin, cambian de color hasta desaparecer en fragmentos.
+Es una forma visual simple de mostrar el ciclo completo: nacen, se relacionan-evolucionan y terminan. Los fragmentos quedan como rastro, pero no duran mucho, reforzando la idea de que todo es temporal.
 
-Por qué:
-Las estrellas no duran para siempre. A medida que se acercan a su fin, cambian de color hasta desaparecer en fragmentos.
-Es una forma visual simple de mostrar el ciclo completo: nacen, evolucionan y terminan. Los fragmentos quedan como rastro, pero no duran mucho, reforzando la idea de que todo es temporal.
-
-* 5. Condición de Muerte: El Ocaso Dorado (Supernova)
-* **Elemento:** Cambio de HUE (Azul a Rojo/Dorado) y estallido en `Fragmentos`.
-* **Decisión de Diseño:** El color como cronómetro de la **entropía**.
-* **El porqué del porqué:** El paso del cian frío al dorado cálido es el indicador visual de que la estrella ha llegado a su límite de vida. Los fragmentos finales (el polvo estelar) son el residuo melancólico de la estructura organizada. Esta fragmentación en el "vacío infinito" refuerza la idea de que todo lo que brilla está destinado a romperse, dejando solo un rastro de luz que pronto se desvanece.
-
-### 6. Interacción: La Paradoja del Observador (Click)
-* **Elemento:** Pozo gravitacional que succiona estrellas y resta vida (`lifespan -= 3.5`).
-* **Decisión de Diseño:** Una mecánica de control con **costo existencial**.
-* **El porqué del porqué:** Esta es la pieza clave de tu narrativa. El usuario, en su afán de "poseer" la belleza o formar la constelación perfecta con el mouse, termina **consumiendo la vida de los astros**. Representa lo insignificante y a la vez destructivo que puede ser el ser humano: en el intento de acercarnos a lo divino (las estrellas), aceleramos su fin. Es una interacción agridulce donde el control es sinónimo de pérdida.
+* 6. Interacción 2: La Paradoja del Observador (Click)
+* Elemento: Pozo gravitacional que succiona estrellas y resta vida (`lifespan -= 3.5`).
+* Decisión de Diseño: Una mecánica de control con un costo. El usuario, en su afán de "poseer o controlar" la belleza o formar la constelación con el mouse, termina consumiendo la vida de las estrellas. Representa lo insignificante y a la vez destructivo que puede ser el ser humano: en el intento de acercarnos a lo divino (las estrellas) o el deseo de control que poseemos, aceleramos su fin. Es una interacción agridulce donde el control es sinónimo de pérdida, ya que conlleva un costo.
 
 4. Implementación: enlace al código en el editor de p5.js + código fuente en la bitácora.
 

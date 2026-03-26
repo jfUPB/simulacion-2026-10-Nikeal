@@ -436,4 +436,3 @@ function draw() {
 
 
 ## Bitácora de reflexión
-// https://editor.p5js.org/Nikeal/sketches/YZ7mydzkZ

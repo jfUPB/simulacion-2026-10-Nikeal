@@ -38,8 +38,6 @@ El tiempo de vida se usa para controlar la transparencia. A medida que el lifesp
 
 ### Actividad 2
 
-Comparación con Example 4.2:
-
 ¿Qué responsabilidades que antes estaban en draw() ahora están dentro de la clase Emitter?
 
 Responsabilidades trasladadas: En el Ejemplo 4.2, el ciclo principal draw() era el encargado absoluto de todo: instanciar cada nueva partícula, guardarla en el arreglo, recorrer ese arreglo al revés, llamar a las funciones de actualización y dibujo, y eliminar las partículas muertas con splice(). En el 4.4, todas estas tareas micro-administrativas se delegan a la clase ParticleSystem (o Emisor). El draw() ahora solo hace una cosa: decirle a los emisores que ejecuten su ciclo (run()).
@@ -105,8 +103,6 @@ Intacta: La Capa de Estructura (el Emisor gestionando la memoria) y la base de l
 Modificada: La Capa de Visualización (gracias a que cada subclase dibuja algo distinto) y la forma en que el Emisor instancia las partículas (decidiendo aleatoriamente qué subclase meter al arreglo).
 
 ### Actividad 4
-
-Entendido. Para que la información te quede perfecta para copiar y organizar en tu bitácora, aquí tienes la Actividad 04 estructurada estrictamente pregunta por pregunta:
 
 - Fuerzas globales vs. locales
 

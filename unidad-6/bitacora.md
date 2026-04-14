@@ -128,5 +128,408 @@ Si estuviera dirigiendo las visuales de un show en vivo, esta sería mi selecci�
 
 ## Bitácora de aplicación 
 
+1. Concepto visual.
+
+
+
+2. Relación entre la visual y la canción.
+
+
+
+3. Moodboard o referencias.
+
+
+
+4. Dos o más bocetos.
+
+
+
+5. Mapa de decisiones.
+
+
+
+6. Mapa de interpretación.
+
+
+
+7. Justificación del algoritmo elegido.
+
+
+
+8. Explicación de la relación audio-visual.
+
+
+
+9. Evidencia del uso de IA.
+
+
+
+10. Código fuente.
+
+
+
+11. Enlace al sketch.
+
+https://editor.p5js.org/Nikeal/sketches/5oBOHkeDT
+
+12. Capturas o registros de momentos importantes de la pieza.
+
+
 
 ## Bitácora de reflexión
+
+
+/**
+ * VIVARIUM - Instrumento Visual Performativo
+ * Físicas: Tejido Elástico (Reacciona a intensidad y ritmo) + Marea Fluida
+ * * CONTROLES VJ:
+ * [ Clic ]  -> Iniciar audio / El Mouse crea un vórtice gravitacional en el mar
+ * [Espacio] -> Modo "Tormenta" (El mar se vuelve caótico)
+ * [ F ]     -> Pantalla Completa
+ * [ R ]     -> Reiniciar corrientes y posición
+ * [ G ]     -> Cambiar Paleta de Bioluminiscencia
+ */
+
+let cancion;
+let fft;
+let amplitud;
+let audioIniciado = false;
+
+let campoFlujo;
+let gotasMar = [];
+let cantidadGotas = 1500; // Marea visible
+let criatura; 
+
+let modoTormenta = false;
+let zoff = 0;
+
+let paletas;
+let estacionActual = 0;
+
+function preload() {
+  cancion = loadSound("Vivarium.mp3");
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+  background(220, 100, 5);
+  
+  // Análisis dual: FFT para frecuencias (ritmo) y Amplitud para volumen puro (tensión)
+  fft = new p5.FFT(0.8, 128);
+  fft.setInput(cancion);
+  amplitud = new p5.Amplitude();
+  amplitud.setInput(cancion);
+  
+  campoFlujo = new CampoFlujo(20);
+  
+  for (let i = 0; i < cantidadGotas; i++) {
+    gotasMar.push(new GotaMar());
+  }
+  
+  configurarPaletas();
+  criatura = new Criatura(width / 2, height / 2, 220); // 220 Células conectadas
+}
+
+function draw() {
+  if (!audioIniciado) {
+    pantallaEspera();
+    return;
+  }
+
+  blendMode(BLEND);
+  background(220, 80, 5, 12); // Rastro del océano
+
+  // --- ANÁLISIS DE AUDIO AVANZADO ---
+  fft.analyze();
+  let bajos = fft.getEnergy("bass");     // Fuerza de las corrientes
+  let medios = fft.getEnergy("lowMid");  // Brillo de las células
+  let agudos = fft.getEnergy("treble");  // Ritmo/Velocidad (Pace)
+  
+  // Nivel de volumen general suavizado (0.0 a 1.0)
+  let nivelVolumen = amplitud.getLevel(); 
+
+  // Actualizar el mar
+  campoFlujo.actualizar(agudos, bajos);
+
+  blendMode(ADD);
+
+  // 1. DIBUJAR LA MAREA
+  for (let gota of gotasMar) {
+    gota.seguir(campoFlujo);
+    gota.actualizar(bajos, agudos);
+    gota.mostrar(bajos);
+  }
+
+  // 2. ACTUALIZAR Y DIBUJAR LA CRIATURA
+  // Le pasamos el volumen (para la tensión) y los agudos (para la velocidad)
+  criatura.actualizar(campoFlujo, nivelVolumen, agudos);
+  criatura.mostrar(medios, nivelVolumen);
+}
+
+// ==========================================
+// CONTROLES VJ
+// ==========================================
+function mousePressed() {
+  if (!audioIniciado) { cancion.play(); audioIniciado = true; noCursor(); }
+}
+function keyPressed() {
+  if (keyCode === 32) modoTormenta = !modoTormenta; 
+  if (key === 'f' || key === 'F') fullscreen(!fullscreen()); 
+  if (key === 'r' || key === 'R') { background(220, 100, 5); campoFlujo.iniciar(); }
+  if (key === 'g' || key === 'G') {
+    estacionActual = (estacionActual + 1) % paletas.length;
+    criatura.actualizarColores(); 
+  }
+}
+function windowResized() { resizeCanvas(windowWidth, windowHeight); campoFlujo.iniciar(); }
+
+function pantallaEspera() {
+  background(220, 100, 5); fill(255, 60); noStroke(); textAlign(CENTER, CENTER); textSize(16);
+  text("SUMÉRGETE EN LA MAREA\nClick para iniciar", width / 2, height / 2);
+}
+
+function configurarPaletas() {
+  paletas = [
+    { nombre: "Cian/Azul", c1: color(210, 90, 80), c2: color(180, 80, 100) },
+    { nombre: "Verde Tóxico", c1: color(140, 90, 70), c2: color(90, 80, 90) },
+    { nombre: "Carmesí", c1: color(350, 90, 80), c2: color(15, 80, 100) },
+    { nombre: "Morado", c1: color(280, 80, 70), c2: color(320, 90, 90) }
+  ];
+}
+
+// ==========================================
+// EL MAR INVISIBLE Y CORRIENTES
+// ==========================================
+class CampoFlujo {
+  constructor(escala) { this.escala = escala; this.iniciar(); }
+  iniciar() {
+    this.cols = floor(width / this.escala) + 1;
+    this.rows = floor(height / this.escala) + 1;
+    this.vectores = new Array(this.cols * this.rows);
+  }
+  actualizar(agudos, bajos) {
+    zoff += modoTormenta ? 0.02 : map(agudos, 0, 255, 0.001, 0.015);
+    let fuerzaCorriente = map(bajos, 0, 255, 0.1, 1.5);
+    let xoff = 0;
+    for (let i = 0; i < this.cols; i++) {
+      let yoff = 0;
+      for (let j = 0; j < this.rows; j++) {
+        let angulo = noise(xoff, yoff, zoff) * TWO_PI * 4;
+        let v = p5.Vector.fromAngle(angulo);
+        v.setMag(fuerzaCorriente);
+        this.vectores[i + j * this.cols] = v;
+        yoff += 0.05;
+      }
+      xoff += 0.05;
+    }
+  }
+  fuerzaEn(x, y) {
+    let col = floor(constrain(x / this.escala, 0, this.cols - 1));
+    let row = floor(constrain(y / this.escala, 0, this.rows - 1));
+    return this.vectores[col + row * this.cols].copy();
+  }
+}
+
+class GotaMar {
+  constructor() {
+    this.pos = createVector(random(width), random(height));
+    this.vel = createVector(0, 0); this.acc = createVector(0, 0);
+    this.velMax = random(1, 3);
+    this.posPrevia = this.pos.copy();
+  }
+  seguir(campo) {
+    let f = campo.fuerzaEn(this.pos.x, this.pos.y); this.acc.add(f);
+    if (mouseIsPressed) {
+      let mouse = createVector(mouseX, mouseY);
+      if (p5.Vector.dist(this.pos, mouse) < 300) {
+        let jalon = p5.Vector.sub(mouse, this.pos); jalon.setMag(0.5); this.acc.add(jalon);
+      }
+    }
+  }
+  actualizar(bajos, agudos) {
+    this.posPrevia.set(this.pos);
+    this.vel.add(this.acc);
+    // Velocidad del mar responde a los agudos (ritmo) y al modo tormenta
+    let velocidadRitmo = map(agudos, 0, 255, 0, 4);
+    let limite = modoTormenta ? this.velMax * 3 : this.velMax + velocidadRitmo;
+    this.vel.limit(limite);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+    this.bordes();
+  }
+  mostrar(bajos) {
+    let brillo = map(bajos, 0, 255, 20, 60);
+    stroke(200, 90, brillo, 15); 
+    strokeWeight(1);
+    line(this.pos.x, this.pos.y, this.posPrevia.x, this.posPrevia.y);
+  }
+  bordes() {
+    if (this.pos.x > width) { this.pos.x = 0; this.posPrevia.set(this.pos); }
+    if (this.pos.x < 0) { this.pos.x = width; this.posPrevia.set(this.pos); }
+    if (this.pos.y > height) { this.pos.y = 0; this.posPrevia.set(this.pos); }
+    if (this.pos.y < 0) { this.pos.y = height; this.posPrevia.set(this.pos); }
+  }
+}
+
+// ==========================================
+// EL INDIVIDUO ORGANICO (Física de Imanes)
+// ==========================================
+class Criatura {
+  constructor(x, y, cantidad) {
+    this.ancla = createVector(x, y); 
+    this.celulas = [];
+    for (let i = 0; i < cantidad; i++) {
+      this.celulas.push(new CelulaCriatura(x + random(-20, 20), y + random(-20, 20)));
+    }
+    this.actualizarColores();
+  }
+  
+  actualizarColores() {
+    for (let c of this.celulas) c.asignarColor();
+  }
+  
+  actualizar(campo, volumen, agudos) {
+    let corriente = campo.fuerzaEn(this.ancla.x, this.ancla.y);
+    this.ancla.add(corriente.mult(1.5));
+    
+    // Contención central elástica para que no se pierda eternamente
+    let fuerzaCentro = p5.Vector.sub(createVector(width/2, height/2), this.ancla);
+    fuerzaCentro.mult(0.0005);
+    this.ancla.add(fuerzaCentro);
+
+    // Actualizar las células (pasando la intensidad de volumen y el ritmo)
+    for (let c of this.celulas) {
+      c.comportamiento(this.ancla, campo, this.celulas, volumen, agudos);
+      c.actualizar(agudos);
+    }
+  }
+
+  mostrar(medios, volumen) {
+    // Cuando el volumen es alto, el tejido se estira más
+    let distanciaConectivaMax = map(volumen, 0, 1, 40, 180);
+    
+    // DIBUJAR LOS LIGAMENTOS (Líneas de conexión)
+    for (let i = 0; i < this.celulas.length; i++) {
+      for (let j = i + 1; j < this.celulas.length; j++) {
+        let dx = this.celulas[i].pos.x - this.celulas[j].pos.x;
+        let dy = this.celulas[i].pos.y - this.celulas[j].pos.y;
+        let dSq = dx*dx + dy*dy;
+        
+        if (dSq < distanciaConectivaMax * distanciaConectivaMax) {
+          let distReal = sqrt(dSq);
+          
+          // DETALLE VJ: Si están muy separados, el hilo se vuelve delgado y tenso
+          let grosor = map(distReal, 0, distanciaConectivaMax, 3, 0.1);
+          let opacidad = map(distReal, 0, distanciaConectivaMax, 80, 0);
+          
+          let cColor = this.celulas[i].colorBase;
+          stroke(hue(cColor), saturation(cColor), map(medios, 0, 255, 50, 100), opacidad);
+          strokeWeight(grosor);
+          line(this.celulas[i].pos.x, this.celulas[i].pos.y, this.celulas[j].pos.x, this.celulas[j].pos.y);
+        }
+      }
+      // DIBUJAR CÉLULAS
+      this.celulas[i].mostrar(medios, volumen);
+    }
+  }
+}
+
+class CelulaCriatura {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = p5.Vector.random2D(); this.acc = createVector(0, 0);
+    this.radio = random(2, 4);
+    this.asignarColor();
+  }
+  
+  asignarColor() {
+    let paleta = paletas[estacionActual];
+    this.colorBase = lerpColor(paleta.c1, paleta.c2, random(1));
+  }
+  
+  comportamiento(ancla, campo, otrasCelulas, volumen, agudos) {
+    let corriente = campo.fuerzaEn(this.pos.x, this.pos.y); 
+    this.aplicarFuerza(corriente);
+
+    let jalonAlCentro = p5.Vector.sub(ancla, this.pos);
+    let dAlCentro = jalonAlCentro.mag();
+    
+    // --- LÓGICA DE INTENSIDAD (VOLUMEN) ---
+    // A bajo volumen, son un punto denso. A alto volumen, estallan pero se mantienen en red.
+    let radioDeseado = map(volumen, 0, 1, 30, 350); 
+    
+    if (dAlCentro > radioDeseado) {
+      jalonAlCentro.normalize();
+      // Liga elástica: entre más se aleja del radio, más fuerte es jalada hacia adentro
+      let fuerzaResorte = map(dAlCentro, radioDeseado, width, 0.1, 1.0);
+      jalonAlCentro.mult(fuerzaResorte); 
+      this.aplicarFuerza(jalonAlCentro);
+    }
+
+    // --- LÓGICA DE REPULSIÓN (Los "Imanes") ---
+    let separacion = createVector(0, 0); 
+    let count = 0;
+    
+    // La distancia a la que se repelen crece con el volumen (causando la expansión)
+    let distanciaRepulsion = map(volumen, 0, 1, 15, 60);
+
+    for (let otra of otrasCelulas) {
+      if (otra !== this) {
+        let dx = this.pos.x - otra.pos.x;
+        let dy = this.pos.y - otra.pos.y;
+        let dSq = dx*dx + dy*dy;
+        
+        if (dSq > 0 && dSq < distanciaRepulsion * distanciaRepulsion) {
+          let dSep = sqrt(dSq);
+          let dif = createVector(dx, dy); 
+          dif.normalize(); 
+          // Fuerza inversamente proporcional a la distancia
+          dif.div(dSep);
+          separacion.add(dif); 
+          count++;
+        }
+      }
+    }
+    
+    if (count > 0) {
+      separacion.div(count); 
+      // Si el volumen es alto, se empujan entre sí con muchísima fuerza
+      let fuerzaMagnetica = map(volumen, 0, 1, 1.5, 6.0);
+      separacion.setMag(fuerzaMagnetica); 
+      this.aplicarFuerza(separacion);
+    }
+  }
+  
+  aplicarFuerza(f) { this.acc.add(f); }
+  
+  actualizar(agudos) {
+    this.vel.add(this.acc);
+    
+    // --- LÓGICA DE RITMO (VELOCIDAD) ---
+    // Los agudos (hi-hats, percusión rápida, voz rasgada) dictan qué tan rápido viajan
+    let limiteMin = 2;
+    let limiteMax = modoTormenta ? 15 : 10;
+    let velocidadDinamica = map(agudos, 0, 255, limiteMin, limiteMax);
+    
+    this.vel.limit(velocidadDinamica);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+  }
+  
+  mostrar(medios, volumen) {
+    let h = hue(this.colorBase); let s = saturation(this.colorBase);
+    let brillo = map(medios, 0, 255, 40, 100);
+    
+    // El núcleo de las células crece sutilmente con los altos volúmenes
+    let expansion = map(volumen, 0, 1, 1, 2.5);
+    
+    noStroke();
+    // Halo bioluminiscente
+    fill(h, s, brillo, 15); 
+    circle(this.pos.x, this.pos.y, this.radio * 4 * expansion);
+    // Centro denso
+    fill(h, s, 100, 90); 
+    circle(this.pos.x, this.pos.y, this.radio * 2 * expansion);
+  }
+}

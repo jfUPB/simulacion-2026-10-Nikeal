@@ -233,7 +233,7 @@ https://www.youtube.com/watch?v=QZMdymqChj4
 
 10. Código fuente.
 
-```p
+```js
 /*
 Autor: David Nivia
 

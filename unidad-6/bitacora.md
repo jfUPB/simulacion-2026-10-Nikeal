@@ -160,27 +160,474 @@ https://www.youtube.com/watch?v=QZMdymqChj4
 
 5. Mapa de decisiones.
 
+- El Entorno y la Atmósfera
+* Decisión: Fondo de tonos oscuros (azul oscuro/negro) que no se borran por completo, dejando un rastro translúcido (efecto motion blur).
+    * Porque?: Crea la sensación de densidad y profundidad extrema. La oscuridad representa lo desconocido y el encierro del "Hakoniwa" (el jardín de cajas de la canción), mientras que el rastro emula la viscosidad del agua profunda.
+* Decisión: Un mar de partículas gobernadas por un Campo de Flujo (Flowfield de ruido Perlin).
+    * Porque?: Quería que el entorno no estuviera vacío, sino vivo. Las corrientes representan las fuerzas externas de la vida que no podemos controlar, abrumadoras y constantes, obligando al individuo a reaccionar ante ellas.
 
+- Morfología y Forma del Organismo
+* Decisión: Diseño inicial de "Ciempiés" (Extremidades ancladas a lo largo de una espina dorsal mediante Cinemática Inversa).
+    * Porque?: Representa la carga del pasado y la resistencia a dejarlo. Su movimiento se siente como un arrastre lánguido y pesado, simbolizando la fricción y la dificultad de avanzar cuando uno carga con traumas o versiones anteriores de sí mismo.
+* Decisión: Diseño secundario de "Medusa" de dos capas (Extremidades re-ancladas a la cabeza en un radio geométrico).
+    * Porque?: Simboliza la aceptación y la liberación. Elegí no "destruir" las extremidades del ciempiés, sino reconfigurarlas, porque el mensaje central es que aceptar nuestro pasado nos da la estructura para ser libres, permitiendo al organismo flotar y fluir.
+
+- Física y Respuesta al Sonido 
+* Decisión: "Tensión Magnética" extremadamente controlada por el Volumen/Amplitud (Los nodos se repelen violentamente pero están atados por ligamentos elásticos).
+    * Porque?: Queria transmitir el estrés psicológico. Cuando la voz de Ado estalla o la música sube, quería que la criatura pareciera estar a punto de desgarrarse por la presión emocional. Que los ligamentos resistan y no se rompan demuestra resiliencia; la criatura se expande y sufre, pero sobrevive al final o se reconstruye en algunos casos.
+* Decisión: Aceleración de la criatura y del mar atada a los Agudos/Ritmo.
+    * Porque?: Dicta el ritmo de la obra. En los silencios, la criatura levita en cámara lenta (melancolía, pausa reflexiva). Cuando entran los *hi-hats* o la percusión rápida, el límite de velocidad se dispara, creando un frenesí visual que iguala la ansiedad y la energía de la música.
+
+- Renderizado y Estética Visual
+* Decisión: Uso de un sistema "Plexus" (dibujar hilos finos entre partículas solo si están cerca) en lugar de formas sólidas.
+    * Porque?: Da la sensación de un tejido nervioso frágil, translúcido y orgánico. Representa cómo estamos compuestos por recuerdos y células interconectadas. Cuando el volumen sube y el cuerpo se expande, estos hilos se adelgazan visualmente, acentuando el sentimiento de tensión.
+* Decisión: Emisión de un rastro de partículas bioluminiscentes que se encogen y desvanecen lentamente.
+    * Porque?: Funciona como una metáfora del tiempo, la memoria y el desgaste. El organismo deja partes de su energía (su luz) en el mar a medida que avanza, marcando su existencia en un entorno grande.
+* Decisión: Cambio dinámico de paletas de color (4 emociones).
+    * Porque? Para acompañar la evolución emocional de la canción, e interactuar un poco con la criatura.
+
+- Interactividad y Performance
+* Decisión: La metamorfosis no es automática; se acciona manualmente presionando la barra espaciadora.
+    * Porque?: Convierte el código en un instrumento performático. Me permite a mí (como VJ o artista) "tocar" la visual en vivo, asegurándome de que el impacto visual de la liberación ocurra en el momento que quiero, dando presencia y conexión con la obra.
 
 6. Mapa de interpretación.
 
+* Audio (Amplitud / Volumen): Controla la tensión estructural de la pieza. De forma autónoma, el volumen dicta qué tanto se expanden y estiran los "huesos" de la criatura (efecto magnético) y qué cantidad de rastro bioluminiscente deja a su paso.
+* Audio (Agudos / Ritmo): Controla la energía cinética general. Regula de forma automática la velocidad límite a la que nada la criatura y la turbulencia de las corrientes marinas, pasando del la calma al frenesí.
+* Barra Espaciadora: Cambia la morfologia de la criatura. Se activa manualmente y es para enfatizar ne la metamorfosis del Ciempiés (represión) a la Medusa fractal (liberación).
+* Tecla [ G ]: Cambia entre las paletas de colores (Azul, Rojo, Magenta, Verde). Lo utilizo para cambiar de expresión y marcar manualmente los cambios de estación emocional o las nuevas secciones de la canción, asegurando que el color coincida con la intención de la voz.
+* Tecla [ F ]: Control de inmersión. Permite aislar la pieza en pantalla completa.
 
+*** ¡Con este texto cubres a la perfección el requisito de tu entrega, demostrando que tú eres el director de la pieza visual en todo momento! ¿Seguimos con alguna otra sección de tu bitácora?
 
 7. Justificación del algoritmo elegido.
 
+* Cinemática Inversa (IK) en lugar de Flocking (comportamiento de enjambre): Elegí Cinemática Inversa para construir el cuerpo de la criatura porque necesitaba una sensación de estructura, tensión y restricción. Si hubiera usado un algoritmo de *flocking*, las partículas se habrían dispersado libremente por el lienzo al subir el volumen de la música. IK, en cambio, obliga a los nodos a actuar como "huesos" conectados a ligamentos. Esto me permitió programar el efecto de "repulsión magnética": el volumen empuja las partículas hacia afuera, pero la Cinemática Inversa las obliga a mantenerse unidas. Esta física es la traducción exacta de mi concepto narrativo: la presión psicológica de querer huir del pasado, pero estar atado a él. Además, IK es lo que permite que el anclaje cambie suavemente y la criatura mute de Ciempiés a Medusa de forma orgánica.
+
+* Flow Fields (Campos de Flujo con Ruido Perlin) en lugar de movimiento aleatorio:
+    Elegí un *flow field* para el fondo y las partículas del agua porque necesitaba transmitir la sensación de un entorno acuatico continuo. Un movimiento aleatorio (*random walk*) se habría visto como un poco simple sin sentido. El campo de flujo crea "corrientes" invisibles que arrastran tanto a la criatura como a las partículas de agua de una manera fluida.
+
+* Algoritmo Plexus (Trazado de líneas por umbral de distancia) en lugar de formas sólidas:
+    Para dibujar la criatura, elegí un algoritmo que mide la distancia entre todos los nodos y traza líneas solo entre aquellos que están cerca. Elegí esto en lugar de dibujar esferas sólidas o polígonos cerrados porque quería que la criatura se sintiera frágil, translúcida y compleja. Este algoritmo genera una textura de "telaraña" o sistema nervioso que refuerza la idea de que la criatura es un ser que "siente".
 
 
 8. Explicación de la relación audio-visual.
 
-
+* Amplitud (Volumen general) = Tensión estructural:
+     Tomé el nivel de volumen y lo suavicé mediante interpolación lineal (`lerp`) para crear resistencia elástica. El volumen controla la expansión magnética del esqueleto: a bajo volumen, los "huesos" miden apenas 3 píxeles; en los picos de intensidad, los nodos se repelen violentamente y la distancia se multiplica por 8.
+* Frecuencias Agudas (Treble) =
+    Mapeé los agudos al límite de velocidad de la criatura (`velMax`) y a la turbulencia del entorno (*z-offset* del ruido Perlin). Cuando entra la percusión rápida o los sonidos estridentes, la criatura deja de levitar lánguidamente a medio píxel por frame y sale disparada hasta 20 píxeles por frame.
+* Frecuencias Bajas (Bass) = 
+    Los bajos no afectan la anatomía de la criatura, sino la gravedad de las corrientes marinas (*Flowfield*). Cada golpe de bajo fuerte, como un bombo de batería, incrementa la magnitud de los vectores del mar. Esto arrastra las partes de la criatura y el rastro de partículas con más violencia, enfatizando la lucha constante del organismo contra un entorno que lo supera en tamaño y fuerza.
+* Frecuencias Medias (LowMid)
+    Mapeé estas frecuencias centrales a la opacidad y el brillo de los hilos de luz (el tejido *Plexus*). Esto permite que la "telaraña" geométrica que forma a la criatura titile orgánicamente, asegurando que el cuerpo principal de la melodía se refleje en la textura visual de la pieza.
 
 9. Evidencia del uso de IA.
 
+"El concepto narrativo (la metáfora de la relación de Ado con su pasado), la dirección visual (la metamorfosis de ciempiés a medusa), las lógicas de interacción como performance y la decisión de mapear variables específicas del audio a la tensión estructural y la velocidad, fueron 100% mis ideas y diseño conceptual. Utilicé la IA (Gemini) para traducir mis directrices de diseño a código funcional en `p5.js`. Específicamente, utilicé la herramienta para:
 
+1. Implementar la matemática compleja de la Cinemática Inversa (IK) que me permitiera lograr la tensión elástica que yo buscaba.
+2. Optimizar el rendimiento del algoritmo de proximidad (Plexus) para dibujar la estructura fractal sin que el navegador colapsara.
+3. Formular la curva matemática exponencial (`pow`) necesaria para que el salto de color de azul a rojo fuera agresivo y no un degradado suave.
+4. Depurar errores de sintaxis y referencias en la consola (como un `ReferenceError` con la variable de los bajos del espectro de audio). 
 
 10. Código fuente.
 
+```p
+/*
+Autor: David Nivia
 
+VIVARIUM - Instrumento Visual Performativo
+
+Año:  2026-10
+
+CONTROLES:
+ [ Clic ]  -> Iniciar Obra 
+ [Espacio] -> Metamorfosis (Arrastrarse vs Flotar)
+ [ F ]     -> Pantalla Completa
+ [ G ]     -> Cambiar Paleta de Bioluminiscencia
+
+Narrativa del proyecto:
+
+El concepto del arte generativo,interactivo y performático que interpreta visualmente la canción “Vivarium” de la cantante japonesa Ado. La idea central es representar la tensión psicológica entre el encierro y la liberación a través de la metáfora de una criatura. Este macro-organismo muta de un ciempiés (el "Hakoniwa" o jardín cerrado) a una medusa que flota libremente (de forma manual), simbolizando la lucha por no dejar atras parte de si mismo y aprender a aceptarla.
+
+Para lograrlo, el proyecto utiliza las bibliotecas p5.js y p5.sound para analizar el audio en profundidad y en tiempo real, vinculando características musicales específicas a un sistema de físicas matemáticas extremas:
+
+Ritmo, amplitud y frecuencias: la amplitud (volumen general) controla directamente la tensión elástica del organismo. Los picos de intensidad expanden la estructura de la criatura simulando repulsión magnética, estirando su tejido sin dejar que se rompa, mientras deja a su paso un rastro de esporas bioluminiscentes. En paralelo, los agudos dictan la velocidad de movimiento y la turbulencia del entorno, pasando de una calma a una aceleración fuerte, mientras que los bajos y medios rigen la fuerza de la corriente oceánica y los destellos lumínicos que responden a la voz.
+
+Algoritmo generativo: el núcleo de la obra es un motor físico híbrido. Utiliza Cinemática Inversa (IK) para construir un esqueleto morfológico dinámico que permite la metamorfosis en tiempo real. Este cuerpo es arrastrado por un campo de flujo (flowfield) de ruido Perlin que simula una marea viva y caótica. Finalmente, un algoritmo de red Plexus renderiza la criatura, trazando líneas geométricas y traslúcidas entre sus células según su proximidad. Esto crea un tejido orgánico y fractal que garantiza que cada movimiento de la medusa sea irrepetible y reaccione visceralmente al sonido.
+*/
+
+let cancion, fft, amplitud;
+let audioIniciado = false;
+
+let campoFlujo;
+let quimera; 
+let gotasMar = [];
+let rastroCriatura = []; // NUEVO: Arreglo para el rastro de la criatura
+
+// Estado Performático
+let modoMedusa = false; 
+let zoff = 0;
+let paletas;
+let estacionActual = 0;
+
+let volumenSuavizado = 0;
+
+function preload() {
+  cancion = loadSound("Vivarium.mp3");
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+  background(2, 5, 12);
+  
+  fft = new p5.FFT(0.8, 128);
+  fft.setInput(cancion);
+  amplitud = new p5.Amplitude();
+  amplitud.setInput(cancion);
+  
+  configurarPaletas();
+  campoFlujo = new CampoFlujo(35);
+  
+  for(let i=0; i<800; i++) gotasMar.push(new GotaMar());
+  
+  quimera = new Quimera(width/2, height/2, 30, 16, 14);
+}
+
+function draw() {
+  if (!audioIniciado) { pantallaEspera(); return; }
+
+  blendMode(BLEND);
+  background(2, 5, 12, 35); 
+
+  fft.analyze();
+  let bajos = fft.getEnergy("bass");     
+  let medios = fft.getEnergy("lowMid");  
+  let agudos = fft.getEnergy("treble");  
+  
+  let volActual = amplitud.getLevel();
+  volumenSuavizado = lerp(volumenSuavizado, volActual, 0.2); 
+
+  campoFlujo.actualizar(agudos, bajos);
+
+  blendMode(ADD); 
+
+  // 1. EL MAR
+  for (let gota of gotasMar) {
+    gota.seguir(campoFlujo);
+    gota.actualizar(agudos);
+    gota.mostrar(bajos);
+  }
+
+  // 2. EL RASTRO DE LA CRIATURA (NUEVO)
+  for (let i = rastroCriatura.length - 1; i >= 0; i--) {
+    rastroCriatura[i].actualizar();
+    rastroCriatura[i].mostrar();
+    if (rastroCriatura[i].muerta()) {
+      rastroCriatura.splice(i, 1);
+    }
+  }
+
+  // 3. LA QUIMERA
+  quimera.actualizar(campoFlujo, bajos, agudos, volumenSuavizado);
+  quimera.mostrar(medios, volumenSuavizado);
+}
+
+// ==========================================
+// CONTROLES VJ
+// ==========================================
+function mousePressed() { if (!audioIniciado) { cancion.play(); audioIniciado = true; noCursor(); } }
+function keyPressed() {
+  if (keyCode === 32) modoMedusa = !modoMedusa; 
+  if (key === 'f' || key === 'F') fullscreen(!fullscreen()); 
+  if (key === 'g' || key === 'G') {
+    estacionActual = (estacionActual + 1) % paletas.length;
+    quimera.actualizarColor();
+  }
+}
+function windowResized() { resizeCanvas(windowWidth, windowHeight); campoFlujo.iniciar(); }
+
+function pantallaEspera() {
+  background(2, 5, 12); fill(255, 80); noStroke(); textAlign(CENTER, CENTER); textSize(16);
+  text("EL VIVARIUM ESTÁ LISTO\nClick para sumergirse", width / 2, height / 2);
+}
+
+function configurarPaletas() {
+  paletas = [
+    { c1: color(210, 90, 80), c2: color(180, 80, 100) }, // Azul/Cian
+    { c1: color(350, 90, 80), c2: color(15, 80, 100) },  // Sangre (Clímax)
+    { c1: color(320, 90, 90), c2: color(280, 80, 70) },  // Magenta/Morado
+    { c1: color(140, 90, 70), c2: color(90, 80, 90) }    // Verde Tóxico
+  ];
+}
+
+// ==========================================
+// EL MAR FLUIDO
+// ==========================================
+class CampoFlujo {
+  constructor(escala) { this.escala = escala; this.iniciar(); }
+  iniciar() {
+    this.cols = floor(width / this.escala) + 1;
+    this.rows = floor(height / this.escala) + 1;
+    this.vectores = new Array(this.cols * this.rows);
+  }
+  actualizar(agudos, bajos) {
+    zoff += modoMedusa ? map(agudos, 0, 255, 0.005, 0.04) : map(agudos, 0, 255, 0.002, 0.02);
+    let fuerzaCorriente = map(bajos, 0, 255, 0.1, 2.0);
+    let xoff = 0;
+    for (let i = 0; i < this.cols; i++) {
+      let yoff = 0;
+      for (let j = 0; j < this.rows; j++) {
+        let angulo = noise(xoff, yoff, zoff) * TWO_PI * 4;
+        let v = p5.Vector.fromAngle(angulo);
+        v.setMag(fuerzaCorriente);
+        this.vectores[i + j * this.cols] = v;
+        yoff += 0.05;
+      }
+      xoff += 0.05;
+    }
+  }
+  fuerzaEn(x, y) {
+    let col = floor(constrain(x / this.escala, 0, this.cols - 1));
+    let row = floor(constrain(y / this.escala, 0, this.rows - 1));
+    return this.vectores[col + row * this.cols].copy();
+  }
+}
+
+class GotaMar {
+  constructor() {
+    this.pos = createVector(random(width), random(height));
+    this.vel = createVector(0, 0); this.acc = createVector(0, 0);
+    this.velMaxBase = random(1, 4);
+    this.posPrevia = this.pos.copy();
+  }
+  seguir(campo) {
+    let f = campo.fuerzaEn(this.pos.x, this.pos.y); this.acc.add(f);
+  }
+  actualizar(agudos) {
+    this.posPrevia.set(this.pos);
+    this.vel.add(this.acc);
+    let impulsoRitmo = map(agudos, 0, 255, 0, 8);
+    this.vel.limit(this.velMaxBase + impulsoRitmo);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+    if (this.pos.x > width) { this.pos.x = 0; this.posPrevia.set(this.pos); }
+    if (this.pos.x < 0) { this.pos.x = width; this.posPrevia.set(this.pos); }
+    if (this.pos.y > height) { this.pos.y = 0; this.posPrevia.set(this.pos); }
+    if (this.pos.y < 0) { this.pos.y = height; this.posPrevia.set(this.pos); }
+  }
+  mostrar(bajos) {
+    stroke(200, 90, map(bajos, 0, 255, 10, 40), 20); 
+    strokeWeight(1);
+    line(this.pos.x, this.pos.y, this.posPrevia.x, this.posPrevia.y);
+  }
+}
+
+// ==========================================
+// NUEVO: SISTEMA DE RASTRO DE LA CRIATURA
+// ==========================================
+class ParticulaRastro {
+  constructor(x, y, colorBase) {
+    this.pos = createVector(x, y);
+    // Leve movimiento aleatorio para que flote en el agua
+    this.vel = p5.Vector.random2D().mult(random(0.1, 0.5));
+    this.vida = 255; // Nivel de opacidad inicial
+    this.colorBase = colorBase;
+    this.radio = random(1.5, 3.5);
+    this.ritmoDesvanecimiento = random(3, 8); // Qué tan rápido desaparece
+  }
+  actualizar() {
+    this.pos.add(this.vel);
+    this.vida -= this.ritmoDesvanecimiento;
+  }
+  mostrar() {
+    noStroke();
+    let h = hue(this.colorBase);
+    let s = saturation(this.colorBase);
+    // Transparencia máxima de 40 para que sea un rastro "leve"
+    fill(h, s, 100, map(this.vida, 0, 255, 0, 40)); 
+    circle(this.pos.x, this.pos.y, this.radio * 2);
+  }
+  muerta() {
+    return this.vida <= 0;
+  }
+}
+
+// ==========================================
+// LA QUIMERA EXTREMA
+// ==========================================
+class Quimera {
+  constructor(x, y, numEspina, numPatas, largoPataMax) {
+    this.cabeza = createVector(x, y);
+    this.velCabeza = createVector(0, 0);
+    
+    this.distanciaNodosBase = 3; 
+    this.espina = new CadenaIK(x, y, numEspina); 
+    
+    this.apendices = [];
+    let pasoEspina = floor(numEspina / numPatas); 
+    
+    for (let i = 0; i < numPatas; i++) {
+      let anclajeCienpies = constrain((i * pasoEspina) + 1, 0, numEspina - 1);
+      let anguloMedusa = map(i, 0, numPatas, 0, TWO_PI);
+      let longitudReal = (i % 2 === 0) ? largoPataMax : floor(largoPataMax * 0.5);
+      this.apendices.push(new Apendice(x, y, longitudReal, anclajeCienpies, anguloMedusa));
+    }
+    
+    this.actualizarColor();
+  }
+
+  actualizarColor() {
+    let p = paletas[estacionActual];
+    this.colorBase = lerpColor(p.c1, p.c2, 0.5);
+  }
+
+  actualizar(campo, bajos, agudos, volumen) {
+    let expansionMagnetica = map(volumen, 0, 0.5, 1, 10); 
+    let distanciaNodosActual = this.distanciaNodosBase * expansionMagnetica;
+
+    let corriente = campo.fuerzaEn(this.cabeza.x, this.cabeza.y);
+    let aceleracion = corriente.copy().mult(2.5);
+    
+    if (mouseIsPressed) {
+      let jalonMouse = p5.Vector.sub(createVector(mouseX, mouseY), this.cabeza);
+      jalonMouse.setMag(2.0);
+      aceleracion.add(jalonMouse);
+    }
+    
+    this.velCabeza.add(aceleracion);
+    let velMax = map(agudos, 0, 255, 0.5, 20); 
+    this.velCabeza.limit(velMax);
+    this.cabeza.add(this.velCabeza);
+    
+    if (this.cabeza.x < 0) this.cabeza.x += width;
+    if (this.cabeza.x > width) this.cabeza.x -= width;
+    if (this.cabeza.y < 0) this.cabeza.y += height;
+    if (this.cabeza.y > height) this.cabeza.y -= height;
+
+    this.espina.seguir(this.cabeza.x, this.cabeza.y, distanciaNodosActual);
+
+    let radioCampana = 20 + (expansionMagnetica * 8); 
+
+    for (let i = 0; i < this.apendices.length; i++) {
+      let ap = this.apendices[i];
+      let objetivoAnclaje;
+      
+      if (modoMedusa) {
+        let radioDinamico = (i % 2 === 0) ? radioCampana : radioCampana * 0.4;
+        let offsetCampana = p5.Vector.fromAngle(ap.anguloCampana).mult(radioDinamico);
+        objetivoAnclaje = p5.Vector.add(this.cabeza, offsetCampana);
+      } else {
+        objetivoAnclaje = this.espina.segmentos[ap.indiceAnclajeBase];
+      }
+      
+      ap.posAnclajeVirtual.x = lerp(ap.posAnclajeVirtual.x, objetivoAnclaje.x, 0.07);
+      ap.posAnclajeVirtual.y = lerp(ap.posAnclajeVirtual.y, objetivoAnclaje.y, 0.07);
+
+      ap.cadena.seguir(ap.posAnclajeVirtual.x, ap.posAnclajeVirtual.y, distanciaNodosActual);
+      ap.cadena.aplicarFuerzaExterna(campo);
+    }
+  }
+
+  mostrar(medios, volumen) {
+    let h = hue(this.colorBase);
+    let s = saturation(this.colorBase);
+    
+    let todosLosNodos = [];
+    todosLosNodos.push(this.cabeza);
+    todosLosNodos = todosLosNodos.concat(this.espina.segmentos);
+    for (let ap of this.apendices) {
+      todosLosNodos = todosLosNodos.concat(ap.cadena.segmentos);
+    }
+
+    let distanciaConexionPlexus = modoMedusa ? 
+                                  map(volumen, 0, 0.5, 50, 180) : 
+                                  map(volumen, 0, 0.5, 30, 100);
+
+    for (let i = 0; i < todosLosNodos.length; i++) {
+      for (let j = i + 1; j < todosLosNodos.length; j++) {
+        let nA = todosLosNodos[i];
+        let nB = todosLosNodos[j];
+        let dSq = (nA.x - nB.x)**2 + (nA.y - nB.y)**2;
+        
+        if (dSq > 0 && dSq < distanciaConexionPlexus**2) {
+          let d = sqrt(dSq);
+          let grosor = map(d, 0, distanciaConexionPlexus, 3, 0.05);
+          let opacidad = map(d, 0, distanciaConexionPlexus, 100, 5);
+          
+          stroke(h, s, map(medios, 0, 255, 60, 100), opacidad);
+          strokeWeight(grosor);
+          line(nA.x, nA.y, nB.x, nB.y);
+        }
+      }
+    }
+
+    noStroke();
+    let brillo = map(medios, 0, 255, 50, 100);
+    
+    // Probabilidad de soltar rastro basada en el volumen musical
+    let probabilidadRastro = map(volumen, 0, 0.5, 0.01, 0.08);
+
+    for (let nodo of todosLosNodos) {
+      let tamañoParticula = map(volumen, 0, 0.5, 1.5, 5); 
+      
+      fill(h, s, brillo, 20);
+      circle(nodo.x, nodo.y, tamañoParticula * 5); 
+      fill(h, s, 100, 90);
+      circle(nodo.x, nodo.y, tamañoParticula);     
+
+      // NUEVO: La criatura va dejando partículas de rastro al moverse
+      if (random() < probabilidadRastro) {
+        rastroCriatura.push(new ParticulaRastro(nodo.x, nodo.y, this.colorBase));
+      }
+    }
+
+    fill(0, 0, 100, 100); 
+    circle(this.cabeza.x, this.cabeza.y, map(volumen, 0, 0.5, 5, 20));
+  }
+}
+
+// ==========================================
+// CINEMÁTICA INVERSA ADAPTABLE
+// ==========================================
+class CadenaIK {
+  constructor(x, y, numSegmentos) {
+    this.segmentos = [];
+    for (let i = 0; i < numSegmentos; i++) {
+      this.segmentos.push(createVector(x, y));
+    }
+  }
+
+  seguir(targetX, targetY, longitudDinamica) {
+    let objetivo = createVector(targetX, targetY);
+    this.segmentos[0] = objetivo;
+
+    for (let i = 1; i < this.segmentos.length; i++) {
+      let dir = p5.Vector.sub(this.segmentos[i-1], this.segmentos[i]);
+      dir.setMag(longitudDinamica); 
+      this.segmentos[i] = p5.Vector.sub(this.segmentos[i-1], dir);
+    }
+  }
+
+  aplicarFuerzaExterna(campo) {
+    for (let i = 1; i < this.segmentos.length; i++) {
+      let f = campo.fuerzaEn(this.segmentos[i].x, this.segmentos[i].y);
+      this.segmentos[i].add(f.mult(0.8));
+    }
+  }
+}
+
+class Apendice {
+  constructor(x, y, numSegmentos, indiceEspina, anguloCampana) {
+    this.cadena = new CadenaIK(x, y, numSegmentos);
+    this.indiceAnclajeBase = indiceEspina; 
+    this.anguloCampana = anguloCampana;    
+    this.posAnclajeVirtual = createVector(x, y); 
+  }
+}
+```
 
 11. Enlace al sketch.
 
@@ -193,7 +640,7 @@ https://editor.p5js.org/Nikeal/sketches/5oBOHkeDT
 ## Bitácora de reflexión
 
 
-
+https://editor.p5js.org/Nikeal/sketches/Qt5PQwLhc
 
 
 

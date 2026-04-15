@@ -130,11 +130,15 @@ Si estuviera dirigiendo las visuales de un show en vivo, esta sería mi selecci�
 
 1. Concepto visual.
 
+Para este proyecto, quise interpretar visualmente la canción "Vivarium" de Ado, centrándome en esa sensación de estar atrapado por el pasado y el proceso de aprender a aceptarlo. La obra comienza mostrándonos a una criatura que se arrastra con dificultad, similar a un ciempiés. Esta forma inicial representa el peso de nuestros recuerdos y de las versiones anteriores de nosotros mismos que a veces sentimos como un lastre. A medida que la intensidad de la canción sube, vemos cómo las partes de esta criatura intentan separarse violentamente, como si quisieran huir o desgarrarse por la presión, pero una tensión invisible las obliga a mantenerse unidas, mostrándonos que no podemos simplemente borrar o destruir lo que fuimos.
 
+El momento clave de la pieza ocurre en el clímax de la cancion. En lugar de colapsar bajo esa tensión, la criatura sufre una metamorfosis y se puede transforma en una medusa. Ya no se arrastra pesadamente por el fondo, sino que flota y fluye con las corrientes. Lo más importante de esta transformación es que el organismo no desechó las partes que lo anclaban, sino que las reconfiguró para crear su nueva forma. Con esto, busco transmitir que aceptar nuestro pasado y nuestra memoria no tiene por qué ser una carga; de hecho, es precisamente esa estructura la que nos da la libertad y la belleza para seguir adelante.
 
 2. Relación entre la visual y la canción.
 
+Para mí, era fundamental que la canción de Ado no fuera solo un adorno o un sonido de fondo, sino el verdadero motor físico de la obra. Cada elemento de la canción dicta una regla en este entorno. Por ejemplo, el ritmo y los agudos (como la percusión rápida) controlan la "adrenalina" del organismo: en los momentos tranquilos y melancólicos, la criatura y las corrientes del mar levitan casi congeladas en el tiempo, pero cuando el ritmo se acelera, todo el ecosistema se acelera mas.
 
+Por otro lado, la intensidad del volumen dicta la tensión del cuerpo de la criatura. En los silencios o susurros, el organismo es un núcleo denso, apretado y contenido. Sin embargo, cuando la voz de Ado estalla o hay un clímax musical, esa energía empuja a las células hacia afuera. Visualmente, el cuerpo se expande de forma violenta, estirando los hilos hasta su límite, creando una sensación de desgarro que nunca llega a romperse. Finalmente, la estructura de la pieza es performática: la metamorfosis de ciempiés a "medusa" la ejecuto en vivo, asegurándome de que esta "liberación" visual ocurra exactamente en un punto de quiebre emocional de la canción y viceversa.
 
 3. Moodboard o referencias.
 
@@ -178,6 +182,358 @@ https://editor.p5js.org/Nikeal/sketches/5oBOHkeDT
 
 ## Bitácora de reflexión
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * VIVARIUM - Instrumento Visual Performativo
+ * * Estética: Plexus Fractal (Cienpiés <-> Medusa de dos capas).
+ * * Físicas Extremas: Tensión Magnética Suavizada y Aceleración (Ritmo).
+ * * CONTROLES VJ:
+ * [ Clic ]  -> Iniciar audio / Atraer a la criatura
+ * [Espacio] -> Metamorfosis (Arrastrarse vs Flotar/Medusa)
+ * [ F ]     -> Pantalla Completa
+ * [ G ]     -> Cambiar Paleta de Bioluminiscencia
+ */
+
+let cancion, fft, amplitud;
+let audioIniciado = false;
+
+let campoFlujo;
+let quimera; 
+let gotasMar = [];
+
+// Estado Performático
+let modoMedusa = false; 
+let zoff = 0;
+let paletas;
+let estacionActual = 0;
+
+let volumenSuavizado = 0;
+
+function preload() {
+  cancion = loadSound("Vivarium.mp3");
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+  background(2, 5, 12);
+  
+  fft = new p5.FFT(0.8, 128);
+  fft.setInput(cancion);
+  amplitud = new p5.Amplitude();
+  amplitud.setInput(cancion);
+  
+  configurarPaletas();
+  campoFlujo = new CampoFlujo(35);
+  
+  for(let i=0; i<800; i++) gotasMar.push(new GotaMar());
+  
+  quimera = new Quimera(width/2, height/2, 30, 16, 14);
+}
+
+function draw() {
+  if (!audioIniciado) { pantallaEspera(); return; }
+
+  blendMode(BLEND);
+  background(2, 5, 12, 35); 
+
+  fft.analyze();
+  let bajos = fft.getEnergy("bass");     
+  let medios = fft.getEnergy("lowMid");  
+  let agudos = fft.getEnergy("treble");  
+  
+  let volActual = amplitud.getLevel();
+  volumenSuavizado = lerp(volumenSuavizado, volActual, 0.2); 
+
+  campoFlujo.actualizar(agudos, bajos);
+
+  blendMode(ADD); 
+
+  for (let gota of gotasMar) {
+    gota.seguir(campoFlujo);
+    gota.actualizar(agudos);
+    gota.mostrar(bajos);
+  }
+
+  quimera.actualizar(campoFlujo, bajos, agudos, volumenSuavizado);
+  quimera.mostrar(medios, volumenSuavizado);
+}
+
+// ==========================================
+// CONTROLES VJ
+// ==========================================
+function mousePressed() { if (!audioIniciado) { cancion.play(); audioIniciado = true; noCursor(); } }
+function keyPressed() {
+  if (keyCode === 32) modoMedusa = !modoMedusa; 
+  if (key === 'f' || key === 'F') fullscreen(!fullscreen()); 
+  if (key === 'g' || key === 'G') {
+    estacionActual = (estacionActual + 1) % paletas.length;
+    quimera.actualizarColor();
+  }
+}
+function windowResized() { resizeCanvas(windowWidth, windowHeight); campoFlujo.iniciar(); }
+
+function pantallaEspera() {
+  background(2, 5, 12); fill(255, 80); noStroke(); textAlign(CENTER, CENTER); textSize(16);
+  text("EL VIVARIUM ESTÁ LISTO\nClick para sumergirse", width / 2, height / 2);
+}
+
+function configurarPaletas() {
+  paletas = [
+    { c1: color(210, 90, 80), c2: color(180, 80, 100) }, // Azul/Cian
+    { c1: color(350, 90, 80), c2: color(15, 80, 100) },  // Sangre (Clímax)
+    { c1: color(320, 90, 90), c2: color(280, 80, 70) },  // Magenta/Morado
+    { c1: color(140, 90, 70), c2: color(90, 80, 90) }    // Verde Tóxico
+  ];
+}
+
+// ==========================================
+// EL MAR FLUIDO
+// ==========================================
+class CampoFlujo {
+  constructor(escala) { this.escala = escala; this.iniciar(); }
+  iniciar() {
+    this.cols = floor(width / this.escala) + 1;
+    this.rows = floor(height / this.escala) + 1;
+    this.vectores = new Array(this.cols * this.rows);
+  }
+  actualizar(agudos, bajos) {
+    zoff += modoMedusa ? map(agudos, 0, 255, 0.005, 0.04) : map(agudos, 0, 255, 0.002, 0.02);
+    let fuerzaCorriente = map(bajos, 0, 255, 0.1, 2.0);
+    let xoff = 0;
+    for (let i = 0; i < this.cols; i++) {
+      let yoff = 0;
+      for (let j = 0; j < this.rows; j++) {
+        let angulo = noise(xoff, yoff, zoff) * TWO_PI * 4;
+        let v = p5.Vector.fromAngle(angulo);
+        v.setMag(fuerzaCorriente);
+        this.vectores[i + j * this.cols] = v;
+        yoff += 0.05;
+      }
+      xoff += 0.05;
+    }
+  }
+  fuerzaEn(x, y) {
+    let col = floor(constrain(x / this.escala, 0, this.cols - 1));
+    let row = floor(constrain(y / this.escala, 0, this.rows - 1));
+    return this.vectores[col + row * this.cols].copy();
+  }
+}
+
+class GotaMar {
+  constructor() {
+    this.pos = createVector(random(width), random(height));
+    this.vel = createVector(0, 0); this.acc = createVector(0, 0);
+    this.velMaxBase = random(1, 4);
+    this.posPrevia = this.pos.copy();
+  }
+  seguir(campo) {
+    let f = campo.fuerzaEn(this.pos.x, this.pos.y); this.acc.add(f);
+  }
+  actualizar(agudos) {
+    this.posPrevia.set(this.pos);
+    this.vel.add(this.acc);
+    let impulsoRitmo = map(agudos, 0, 255, 0, 8);
+    this.vel.limit(this.velMaxBase + impulsoRitmo);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+    if (this.pos.x > width) { this.pos.x = 0; this.posPrevia.set(this.pos); }
+    if (this.pos.x < 0) { this.pos.x = width; this.posPrevia.set(this.pos); }
+    if (this.pos.y > height) { this.pos.y = 0; this.posPrevia.set(this.pos); }
+    if (this.pos.y < 0) { this.pos.y = height; this.posPrevia.set(this.pos); }
+  }
+  mostrar(bajos) {
+    stroke(200, 90, map(bajos, 0, 255, 10, 40), 20); 
+    strokeWeight(1);
+    line(this.pos.x, this.pos.y, this.posPrevia.x, this.posPrevia.y);
+  }
+}
+
+// ==========================================
+// LA QUIMERA EXTREMA
+// ==========================================
+class Quimera {
+  constructor(x, y, numEspina, numPatas, largoPataMax) {
+    this.cabeza = createVector(x, y);
+    this.velCabeza = createVector(0, 0);
+    
+    this.distanciaNodosBase = 3; 
+    this.espina = new CadenaIK(x, y, numEspina); 
+    
+    this.apendices = [];
+    let pasoEspina = floor(numEspina / numPatas); 
+    
+    for (let i = 0; i < numPatas; i++) {
+      let anclajeCienpies = constrain((i * pasoEspina) + 1, 0, numEspina - 1);
+      let anguloMedusa = map(i, 0, numPatas, 0, TWO_PI);
+      let longitudReal = (i % 2 === 0) ? largoPataMax : floor(largoPataMax * 0.5);
+      this.apendices.push(new Apendice(x, y, longitudReal, anclajeCienpies, anguloMedusa));
+    }
+    
+    this.actualizarColor();
+  }
+
+  actualizarColor() {
+    let p = paletas[estacionActual];
+    this.colorBase = lerpColor(p.c1, p.c2, 0.5);
+  }
+
+  actualizar(campo, bajos, agudos, volumen) {
+    let expansionMagnetica = map(volumen, 0, 0.5, 1, 8); 
+    let distanciaNodosActual = this.distanciaNodosBase * expansionMagnetica;
+
+    let corriente = campo.fuerzaEn(this.cabeza.x, this.cabeza.y);
+    let aceleracion = corriente.copy().mult(2.5);
+    
+    if (mouseIsPressed) {
+      let jalonMouse = p5.Vector.sub(createVector(mouseX, mouseY), this.cabeza);
+      jalonMouse.setMag(2.0);
+      aceleracion.add(jalonMouse);
+    }
+    
+    this.velCabeza.add(aceleracion);
+    let velMax = map(agudos, 0, 255, 0.5, 20); 
+    this.velCabeza.limit(velMax);
+    this.cabeza.add(this.velCabeza);
+    
+    if (this.cabeza.x < 0) this.cabeza.x += width;
+    if (this.cabeza.x > width) this.cabeza.x -= width;
+    if (this.cabeza.y < 0) this.cabeza.y += height;
+    if (this.cabeza.y > height) this.cabeza.y -= height;
+
+    this.espina.seguir(this.cabeza.x, this.cabeza.y, distanciaNodosActual);
+
+    let radioCampana = 20 + (expansionMagnetica * 8); 
+
+    for (let i = 0; i < this.apendices.length; i++) {
+      let ap = this.apendices[i];
+      let objetivoAnclaje;
+      
+      if (modoMedusa) {
+        let radioDinamico = (i % 2 === 0) ? radioCampana : radioCampana * 0.4;
+        let offsetCampana = p5.Vector.fromAngle(ap.anguloCampana).mult(radioDinamico);
+        objetivoAnclaje = p5.Vector.add(this.cabeza, offsetCampana);
+      } else {
+        objetivoAnclaje = this.espina.segmentos[ap.indiceAnclajeBase];
+      }
+      
+      // Interpolación más suave para que los tentáculos floten con soltura
+      ap.posAnclajeVirtual.x = lerp(ap.posAnclajeVirtual.x, objetivoAnclaje.x, 0.08);
+      ap.posAnclajeVirtual.y = lerp(ap.posAnclajeVirtual.y, objetivoAnclaje.y, 0.08);
+
+      ap.cadena.seguir(ap.posAnclajeVirtual.x, ap.posAnclajeVirtual.y, distanciaNodosActual);
+      ap.cadena.aplicarFuerzaExterna(campo);
+    }
+  }
+
+  mostrar(medios, volumen) {
+    let h = hue(this.colorBase);
+    let s = saturation(this.colorBase);
+    
+    let todosLosNodos = [];
+    todosLosNodos.push(this.cabeza);
+    todosLosNodos = todosLosNodos.concat(this.espina.segmentos);
+    for (let ap of this.apendices) {
+      todosLosNodos = todosLosNodos.concat(ap.cadena.segmentos);
+    }
+
+    // Aumentamos el rango visual de los hilos para compensar la nueva soltura de las partículas
+    let distanciaConexionPlexus = modoMedusa ? 
+                                  map(volumen, 0, 0.5, 50, 180) : 
+                                  map(volumen, 0, 0.5, 30, 100);
+
+    for (let i = 0; i < todosLosNodos.length; i++) {
+      for (let j = i + 1; j < todosLosNodos.length; j++) {
+        let nA = todosLosNodos[i];
+        let nB = todosLosNodos[j];
+        let dSq = (nA.x - nB.x)**2 + (nA.y - nB.y)**2;
+        
+        if (dSq > 0 && dSq < distanciaConexionPlexus**2) {
+          let d = sqrt(dSq);
+          
+          let grosor = map(d, 0, distanciaConexionPlexus, 3, 0.05);
+          let opacidad = map(d, 0, distanciaConexionPlexus, 100, 5);
+          
+          stroke(h, s, map(medios, 0, 255, 60, 100), opacidad);
+          strokeWeight(grosor);
+          line(nA.x, nA.y, nB.x, nB.y);
+        }
+      }
+    }
+
+    noStroke();
+    let brillo = map(medios, 0, 255, 50, 100);
+    
+    for (let nodo of todosLosNodos) {
+      let tamañoParticula = map(volumen, 0, 0.5, 1.5, 5); 
+      
+      fill(h, s, brillo, 20);
+      circle(nodo.x, nodo.y, tamañoParticula * 5); 
+      fill(h, s, 100, 90);
+      circle(nodo.x, nodo.y, tamañoParticula);     
+    }
+
+    fill(0, 0, 100, 100); 
+    circle(this.cabeza.x, this.cabeza.y, map(volumen, 0, 0.5, 5, 20));
+  }
+}
+
+// ==========================================
+// CINEMÁTICA INVERSA ADAPTABLE
+// ==========================================
+class CadenaIK {
+  constructor(x, y, numSegmentos) {
+    this.segmentos = [];
+    for (let i = 0; i < numSegmentos; i++) {
+      this.segmentos.push(createVector(x, y));
+    }
+  }
+
+  seguir(targetX, targetY, longitudDinamica) {
+    let objetivo = createVector(targetX, targetY);
+    this.segmentos[0] = objetivo;
+
+    for (let i = 1; i < this.segmentos.length; i++) {
+      let dir = p5.Vector.sub(this.segmentos[i-1], this.segmentos[i]);
+      dir.setMag(longitudDinamica); 
+      this.segmentos[i] = p5.Vector.sub(this.segmentos[i-1], dir);
+    }
+  }
+
+  aplicarFuerzaExterna(campo) {
+    for (let i = 1; i < this.segmentos.length; i++) {
+      let f = campo.fuerzaEn(this.segmentos[i].x, this.segmentos[i].y);
+      this.segmentos[i].add(f.mult(0.8));
+    }
+  }
+}
+
+class Apendice {
+  constructor(x, y, numSegmentos, indiceEspina, anguloCampana) {
+    this.cadena = new CadenaIK(x, y, numSegmentos);
+    this.indiceAnclajeBase = indiceEspina; 
+    this.anguloCampana = anguloCampana;    
+    this.posAnclajeVirtual = createVector(x, y); 
+  }
+}
+
+--------------------------------
 
 /**
  * VIVARIUM - Instrumento Visual Performativo

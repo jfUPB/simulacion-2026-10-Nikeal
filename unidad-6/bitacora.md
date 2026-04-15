@@ -142,7 +142,17 @@ Por otro lado, la intensidad del volumen dicta la tensión del cuerpo de la cria
 
 3. Moodboard o referencias.
 
+- https://reas.com/process
+<img width="1306" height="690" alt="image" src="https://github.com/user-attachments/assets/732f8425-b1ee-43c3-87e4-51787a03e858" />
 
+- TeamLab — "Moving Creates Vortices and Vortices Create Movement"
+https://www.teamlab.art/w/vortices/
+
+- Theo Jansen — "Strandbeests"
+https://www.strandbeest.com/
+
+- Ryoji Ikeda — "supercodex"
+https://www.youtube.com/watch?v=QZMdymqChj4
 
 4. Dos o más bocetos.
 

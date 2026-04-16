@@ -156,7 +156,9 @@ https://www.youtube.com/watch?v=QZMdymqChj4
 
 4. Dos o más bocetos.
 
+<img width="711" height="551" alt="image" src="https://github.com/user-attachments/assets/60131160-5846-4f51-8718-130a8eb8532b" />
 
+<img width="874" height="601" alt="image" src="https://github.com/user-attachments/assets/a127af6f-2687-4102-84ed-d4ed4ec80f48" />
 
 5. Mapa de decisiones.
 
@@ -635,6 +637,13 @@ https://editor.p5js.org/Nikeal/sketches/5oBOHkeDT
 
 12. Capturas o registros de momentos importantes de la pieza.
 
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/bbb3fda8-1fa4-479d-9806-0eb8402a7134" />
+
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/1be6b3d7-701a-4f10-a207-87862d4c4272" />
+
+<img width="1912" height="1079" alt="image" src="https://github.com/user-attachments/assets/8ec5b533-cf13-4b82-a724-4f17455873c9" />
+
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/a42567e5-ff00-4ea1-b993-dfa7964fb261" />
 
 
 ## Bitácora de reflexión

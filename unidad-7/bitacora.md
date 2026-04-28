@@ -1195,5 +1195,9 @@ function drawStartMessage() {
 
 12. Capturas o registros de la pieza.
 
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/fe525746-87da-47c3-a334-2185e0a1ff40" />
+<img width="851" height="773" alt="image" src="https://github.com/user-attachments/assets/353772d7-26fd-4cac-ae67-3865999da517" />
+<img width="854" height="770" alt="image" src="https://github.com/user-attachments/assets/63b11ea2-4a96-4e0b-9edc-e3d14e99ea5d" />
+
 
 ## Bitácora de reflexión

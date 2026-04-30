@@ -420,7 +420,8 @@ Estroboscopios
 
 5. Bocetos.
 
-
+<img width="1112" height="1600" alt="image" src="https://github.com/user-attachments/assets/5e3e5db1-288f-4d87-83df-2fd6bd1f8db8" />
+<img width="1112" height="1600" alt="image" src="https://github.com/user-attachments/assets/969056d8-cb2f-4946-b1e7-6f5db9718f6f" />
 
 6. Mapa de decisiones.
 

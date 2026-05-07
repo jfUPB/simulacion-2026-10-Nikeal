@@ -40,6 +40,56 @@ Anticipo dos retos técnicos principales en esta transferencia:
 1.  **La audio-reactividad en Blender:** A diferencia de `p5.sound` donde podía leer la Amplitud o el FFT directamente en una variable en tiempo real, en Blender tendré que aprender a extraer (*bakear*) las frecuencias del audio hacia curvas de animación (*F-Curves*) y conectarlas matemáticamente a los parámetros de mis nodos (drivers) para que el ruido de las partículas reaccione al ritmo de la música.
 2.  **Optimización del rendimiento:** Aunque mi hardware actual (procesador de 11ª generación y GPU RTX 3050 Ti con 32GB de RAM) tiene mucha potencia para renderizado 3D, instanciar demasiadas esferas o geometría de alta resolución en cada uno de los miles de puntos de la tipografía podría saturar el *viewport* de Blender. Tendré que ser cuidadoso gestionando la densidad de los vértices para mantener el flujo de trabajo en tiempo real.
 
+### Actividad 3
+
+**1. Componentes o módulos necesarios a aprender**
+Para transferir la lógica de "Tipografía animada por partículas y fuerzas", necesito dominar la equivalencia entre el código de p5.js y los nodos de Blender:
+* **Creación de texto y arreglos:** En p5.js usaba `text()` y arreglos (`arrays`) para guardar posiciones. En Blender necesito aprender la cadena de nodos: **`String to Curves`** (crea el texto) $\rightarrow$ **`Curve to Mesh`** (le da geometría) $\rightarrow$ **`Distribute Points on Faces`** (convierte la malla en un "arreglo" masivo de puntos/partículas).
+* **Fuerzas y vectores (Flow Fields):** En p5.js usaba `noise()` y matemática vectorial (`p5.Vector`) en un bucle `for` para empujar las partículas. En Blender esto se reemplaza por el nodo **`Noise Texture`** combinado con **`Vector Math`** y conectado a un nodo **`Set Position`**, lo que aplica la matemática simultáneamente a miles de vértices.
+* **Lectura de Audio:** En p5.js usaba `p5.Amplitude` y `p5.FFT`. En Blender no hay nodos de audio en tiempo real nativos en Geometry Nodes, así que debo aprender a usar la herramienta **`Bake Sound to F-Curves`** en el *Graph Editor* para convertir las frecuencias del MP3 en valores de animación, y luego usar **Drivers** (expresiones matemáticas, ej. `#frame`) para inyectar ese valor dentro del árbol de nodos.
+
+**2. Pruebas técnicas realizadas y qué resuelven**
+
+* **Prueba A: Materialización (Texto a Nube de Puntos)**
+    * *Ejecución:* Conecté el texto a un nodo de distribución de puntos y luego utilicé un nodo `Instance on Points` para colocar una pequeña esfera emisiva en cada punto.
+    * *Qué resuelve:* Resuelve la transición de un string plano a un elemento 3D de alta densidad que puedo manipular. Al subir la densidad de puntos drásticamente para formar bien las letras, el *viewport* se mantuvo completamente fluido; los 32GB de RAM y la VRAM de la RTX 3050 Ti manejaron la masiva cantidad de instancias sin generar *lag*, confirmando que la base técnica del hardware soporta la visión artística.
+    
+
+* **Prueba B: Desplazamiento Vectorial (El "Viento" o "Ruido")**
+    * *Ejecución:* Inserté un nodo `Set Position` después de los puntos. En su entrada de *Offset* (desplazamiento), conecté un nodo `Noise Texture`, y utilicé un nodo `Math (Multiply)` impulsado por el tiempo de la escena (`#frame / 24`) para animar la evolución del ruido.
+    * *Qué resuelve:* Resuelve el comportamiento físico del sistema. Comprueba que puedo simular turbulencia o campos de flujo (*Flow Fields*) deformando la estructura original de las letras de forma orgánica, exactamente como lo hacíamos al calcular vectores de fuerza en p5.js.
+
+**3. Qué parte del sistema ya logré reconstruir**
+Logré reconstruir con éxito el **estado visual y físico base del sistema**. Ya tengo la tipografía parametrizada (puedo cambiar la palabra en un segundo y todo el sistema se adapta) y logré que se fragmente en miles de partículas flotantes que reaccionan a un campo de turbulencia continuo. Visualmente, el concepto de disolución y partículas está resuelto.
+
+**4. Qué parte sigue sin resolverse**
+Me faltan resolver dos lógicas críticas para completar la "Tipografía Semántica Audio-reactiva":
+1.  **La tensión semántica (El elástico):** Actualmente, el ruido dispersa las partículas infinitamente. Necesito descubrir cómo mezclar (*Mix Node*) la posición deformada por el ruido con la posición original de las letras para crear ese comportamiento de "PULSO" donde las partículas intentan huir pero regresan violentamente a formar la palabra.
+2.  **La conexión con el audio:** Aún no he logrado vincular correctamente las curvas de animación (*F-Curves* extraídas del audio) al nodo que controla la escala o la fuerza del `Noise Texture` para que la destrucción tipográfica ocurra exactamente con los bajos de la canción.
+
+### Actividad 4
+
+**1. Tabla Comparativa: Sistema de Partículas y Fuerzas (Ruido / Flow Fields)**
+
+| Dimensión a evaluar | p5.js + Matter.js (Código Imperativo) | Blender Geometry Nodes (Nodal Declarativo) |
+| :--- | :--- | :--- |
+| **Cómo funcionaba el sistema** | Usábamos arreglos (`arrays`) para guardar objetos. La actualización dependía de un bucle `for` dentro de la función `draw()`, calculando vectores de posición y fuerza iterativamente frame a frame. | Todo el sistema se evalúa simultáneamente en una sola ejecución del árbol de nodos. No hay arreglos visibles; el flujo de datos (Geometría) viaja a través de modificadores espaciales. |
+| **Cómo se implementa ahora** | Lógica de texto. `let v = p5.Vector.random2D()`, seguido de `applyForce()`. Modificadores de audio como `p5.FFT` operando en tiempo real. | Lógica de conexión de datos. Nodos matemáticos (`Vector Math`) se conectan a `Set Position`. El audio se "hornea" (*Bake to F-Curve*) como un valor numérico para controlar la escala del ruido. |
+| **Qué se mantiene** | **El núcleo matemático universal.** El uso del Ruido Perlin, la suma y multiplicación de vectores espaciales, y la lógica de interpolación (*lerp* o *map*) para restringir valores, siguen siendo exactamente los mismos. |
+| **Qué cambia** | **El paradigma estructural y espacial.** Pasamos de escribir instrucciones secuenciales en un lienzo 2D (x, y) a diseñar un flujo de datos continuo en un espacio 3D (x, y, z). Además, el manejo de condicionales es distinto: en p5.js controlábamos la interacción mediante sentencias directas (por ejemplo, evaluar si el clic izquierdo del mouse se mantiene presionado para que el usuario actúe como un pozo gravitacional que arrastra las partículas), mientras que en nodos esto requiere construir complejas mallas de lógica booleana y matemáticas de proximidad para afectar un atributo. |
+| **Nuevas ventajas** | **Rendimiento masivo y fidelidad visual.** Al ejecutarse nativamente en C++ y aprovechar la GPU, el software puede instanciar millones de partículas sin *lag*. Se integran automáticamente propiedades ópticas del mundo real: profundidad de campo fotográfica, texturas PBR y emisividad (luz), dándole a la pieza un acabado de industria. |
+| **Nuevas limitaciones** | **Pérdida de la interpretación en vivo ("Live Performance").** Mientras que p5.js interactuaba con el micrófono y el mouse en milisegundos, Blender (por defecto) no está diseñado para audio-reactividad *live*. Extraer las frecuencias a curvas requiere que el audio esté pregrabado, restándole la naturaleza improvisada e instrumental que tenía el sketch original. |
+
+---
+
+**2. ¿Qué aprendiste sobre el sistema al tener que reconstruirlo fuera de p5.js?**
+
+Al transferir este sistema fuera de p5.js, aprendí que **el código y los lenguajes visuales son solo interfaces para la misma verdad matemática**. 
+
+Un campo de ruido (*Flow Field*) que empuja una partícula funciona bajo el mismo principio algorítmico, ya sea que yo escriba la función de Perlin noise en JavaScript multiplicada por un vector, o que conecte un nodo de `Noise Texture` a un nodo `Math: Multiply` en Blender. Aprendí a separar el "concepto" (la fuerza, la turbulencia, la tensión elástica) de su "sintaxis". 
+
+Esta transferencia me enseñó que mi verdadero valor profesional no radica en saber de memoria las funciones de un programa específico, sino en dominar las lógicas físicas y matemáticas universales, porque esas me permiten reconstruir cualquier comportamiento orgánico en el motor gráfico, entorno o herramienta que la industria demande.
+
 ## Bitácora de aplicación 
 
 

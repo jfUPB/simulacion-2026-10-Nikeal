@@ -113,14 +113,33 @@ El concepto visual se aleja de modelar letras en 3D sólidas que interrumpan el 
 
 5. Referencias.
 
-TeamLab y Ouchhh: Referentes de instalaciones de arte generativo masivo, donde el agua y los fluidos no se renderizan como un líquido tradicional, sino como millones de partículas discretas (voxelización o simulación granular).
+TeamLab y Ouchhh: Referentes de instalaciones de arte generativo masivo, donde el agua y los fluidos no se renderizan como un líquido tradicional, sino como millones de partículas.
+https://www.teamlab.art/es/e/kyoto/
 
 Projection Mapping Escénico: La técnica de usar la luz y el color para proyectar información gráfica sobre superficies topográficas altamente irregulares y en movimiento, integrando el mensaje visual con la textura física.
+https://www.heavym.net/es/top10-3d-projection-mapping/
 
 6. Bocetos.
+
+
 7. Explicación de la transferencia.
+
+El paso de p5.js a Blender 4.5 requirió una traducción directa de lógicas imperativas a declarativas (flujo de datos nodal):
+
+El Bucle draw(): En p5.js, la actualización continua de la posición se hacía en el draw(). En Blender, esto lo reconstruí utilizando la Simulation Zone de Geometry Nodes, que itera y guarda el estado de la geometría en cada cuadro.
+
+Vectores y Orientación (p5.Vector): En código calculábamos el vector de dirección (velocidad) para rotar un agente. Aquí extraje el vector de movimiento y utilicé el nodo Align Rotation to Vector para que cada cubo instanciado mire físicamente hacia donde fluye la corriente.
+
+Variables Globales y map(): En p5.js guardaba la magnitud de la velocidad en una variable y usaba map() para pintar la partícula (ej. más rápido = más blanco). En Blender, usé Store Named Attribute para guardar el vector velocidad con el nombre v. Luego, en el Shader Editor, extraje ese atributo, calculé su magnitud con el nodo Vector Math: Length, y usé un Color Ramp (el equivalente exacto a map()) para colorear el océano desde azul oscuro hasta la espuma clara.
+
 8. Mapa de decisiones.
+
+
+
 9. Mapa de presentación.
+
+
+
 10. Evidencia del uso de IA.
 
 

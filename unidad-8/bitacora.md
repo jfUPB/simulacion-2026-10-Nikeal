@@ -92,5 +92,39 @@ Esta transferencia me enseñó que mi verdadero valor profesional no radica en s
 
 ## Bitácora de aplicación 
 
+1. Herramienta elegida.
+
+- Blender 4.5 (Geometry Nodes + Shader Editor).
+- Elegí esta herramienta porque representa un estándar en la industria de la animación y es la heramienta con la que mas estoy familiarizado. Dentro de mi formación en Ingeniería de Entretenimiento Digital, me interesa profundamente la intersección entre la dirección de arte y la programación técnica (Technical Art).
+
+2. Sistema transferido.
+
+- Sistemas de Partículas con Estado Continuo (Fuerzas y Flow Fields) / Tipografía semántica animada.
+- En lugar de hacer una simple deformación espacial, transferí un sistema donde las partículas tienen "memoria" de su movimiento. Al igual que en p5.js usábamos arreglos para guardar la velocidad y aceleración de agentes autónomos en cada frame, aquí utilicé la Simulation Zone para que las partículas reaccionen de manera fluida y continua a campos vectoriales, acumulando datos de velocidad con el tiempo.
+
+3. Contexto profesional concreto.
+
+La pieza está diseñada como una Secuencia de Apertura o un Visualizer de alta gama para un producto audiovisual cinematográfico o musical, similar a los ejemplos de palabras que se nos mostro de ejemplo en su momento. En la industria actual, la tipografía semántica ya no se sobrepone simplemente sobre el video; se busca que sea mas impactante y se combine con el entorno. Esta topografía granular responde a esa necesidad, ofreciendo un entorno inmersivo donde el texto es revelado por la naturaleza misma del material.
+
+4. Concepto visual.
+
+"OCEAN"
+El concepto visual se aleja de modelar letras en 3D sólidas que interrumpan el flujo del océano. En su lugar, el océano está construido por un tejido denso de micro-geometría (cubos). La palabra "OCEAN" se manifiesta como una proyección o una mancha en el agua, revelándose a través de los colores que se convierte despues en espuma generada por la fricción de la corriente.
+
+5. Referencias.
+
+TeamLab y Ouchhh: Referentes de instalaciones de arte generativo masivo, donde el agua y los fluidos no se renderizan como un líquido tradicional, sino como millones de partículas discretas (voxelización o simulación granular).
+
+Projection Mapping Escénico: La técnica de usar la luz y el color para proyectar información gráfica sobre superficies topográficas altamente irregulares y en movimiento, integrando el mensaje visual con la textura física.
+
+6. Bocetos.
+7. Explicación de la transferencia.
+8. Mapa de decisiones.
+9. Mapa de presentación.
+10. Evidencia del uso de IA.
+
+
+### 11. Código, archivo, proyecto o documentación técnica según la herramienta.
+### 12. Registro visual de la pieza.
 
 ## Bitácora de reflexión

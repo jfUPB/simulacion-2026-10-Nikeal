@@ -180,8 +180,6 @@ La dirección de arte, la decisión estética de convertir el texto en una textu
 
 ### 12. Registro visual de la pieza.
 
-
-https://github.com/user-attachments/assets/eae2809a-60a7-42bf-915b-c66226a5bffe
-
+https://github.com/user-attachments/assets/da4706ea-acc6-4f22-8b37-d3b021c8ff6a
 
 ## Bitácora de reflexión

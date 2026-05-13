@@ -124,7 +124,7 @@ https://www.heavym.net/es/top10-3d-projection-mapping/
 
 7. Explicación de la transferencia.
 
-El paso de p5.js a Blender 4.5 requirió una traducción directa de lógicas imperativas a declarativas (flujo de datos nodal):
+El paso de p5.js a Blender 4.5 requirió una traducción de lógicas imperativas a declarativas (flujo de datos nodal):
 
 El Bucle draw(): En p5.js, la actualización continua de la posición se hacía en el draw(). En Blender, esto lo reconstruí utilizando la Simulation Zone de Geometry Nodes, que itera y guarda el estado de la geometría en cada cuadro.
 

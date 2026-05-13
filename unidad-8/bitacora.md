@@ -122,6 +122,7 @@ https://www.heavym.net/es/top10-3d-projection-mapping/
 6. Bocetos.
 
 
+
 7. Explicación de la transferencia.
 
 El paso de p5.js a Blender 4.5 requirió una traducción de lógicas imperativas a declarativas (flujo de datos nodal):
@@ -134,16 +135,53 @@ Variables Globales y map(): En p5.js guardaba la magnitud de la velocidad en una
 
 8. Mapa de decisiones.
 
+- La Tipografía como Textura (Shader) y no como Malla (Geometría): * La decisión: En lugar de usar el nodo String to Curves para generar texto 3D físico, decidí importar la imagen "Palabra oceano.jpg" directamente en el Shader Editor y proyectarla sobre el material.
+- Si ponía letras sólidas en medio de la cuadrícula, iba a interrumpir la topología del océano; el fluido chocaría contra ellas rompiendo la inmersión. Al hacerlo mediante texturas, logro que la palabra "OCEAN" se comporte como una sombra bajo el agua, un reflejo o una acumulación de espuma. Esto resuelve el problema de integración: la tipografía no compite con el océano, sino que es el océano revelando el mensaje.
 
+- Decidí no conformarme con mover puntos usando un ruido estático, sino encapsular el movimiento dentro de una Simulation Zone en Geometry Nodes.
+- En p5.js, la magia de los flow fields o los agentes autónomos radica en el bucle draw(), donde cada partícula tiene inercia y recuerda su velocidad del frame anterior. Si solo usaba un nodo Noise normal en Blender, perdía esa "memoria" física. La Simulation Zone me permitió recrear exactamente el estado continuo de p5.js, dándole al agua una inercia real y un flujo orgánico y pesado.
+
+- En lugar de intentar simular agua fotorrealista (lo cual es costoso y cliché) o usar esferas básicas, instancié miles de pequeños cubos y utilicé el nodo Align Rotation to Vector conectado a mi atributo de velocidad.
+- A nivel técnico, esto optimiza el rendimiento en mi equipo (RTX 3050 Ti), permitiéndome manejar una densidad altísima sin colapsar la VRAM. A nivel estético, al rotar los cubos en la dirección de la corriente, la superficie del mar adquiere una textura de "escamas" o un tejido granular denso. Esto le da a la pieza el aire de instalación de arte generativo de alta gama (estilo TeamLab), separándola de una simple simulación física genérica.
+
+- Decidí guardar el vector de movimiento bajo el atributo v en Geometry Nodes y llamarlo en el Shader Editor para calcular su magnitud (Length) y conectarlo a un Color Ramp.
+- En código, era muy fácil decir "si la velocidad es alta, pinta la partícula de blanco; si es baja, de azul oscuro". En un entorno de nodos, la geometría y los materiales viven en mundos separados. Tomé esta decisión para crear un puente de datos entre ambos. El resultado es que el color del océano no es un material estático puesto encima al azar; la pintura del mar es una respuesta física directa a la turbulencia de la simulación. El caos genera la espuma.
+
+- Implementé un nodo Relax Points justo antes de instanciar la geometría.
+- Al usar fuerzas continuas, los puntos tienden a amontonarse en los "pozos" gravitacionales del ruido, dejando parches vacíos y zonas superpuestas (un problema clásico del flocking y flow fields). Este nodo actúa como una fuerza de separación (Separation en algoritmos de Boids), obligando a las partículas a mantener una distancia mínima entre ellas, garantizando una superficie legible y limpia para poder proyectar la tipografía sin artefactos visuales.
 
 9. Mapa de presentación.
 
+Dado que mi herramienta es Blender 4.5, diseñé mi presentación en dos actos. El objetivo es que el jurado y el público primero experimenten la obra como una pieza terminada, y luego comprendan la ingeniería generativa que hay detrás.
 
+Acto 1: El Render a Pantalla Completa
+
+- La presentación comenzará con las luces bajas y la proyección a pantalla completa del archivo de video final (Render0001-0132.mp4), sincronizado con el audio. No habrá interfaces, cursores, ni explicaciones previas.
+- Blender brilla en su motor de render y en el cálculo físico avanzado. Mostrar el video final permite que el concepto visual de "OCEAN" (la atmósfera melancólica, la refracción de los cubos y el peso del fluido) se transmita de forma inmersiva. Si mostrara el software de entrada, la atención se desviaría hacia los menús y se perdería el impacto emocional de la tipografía revelándose entre las sombras del mar.
+
+Acto 2: Demostración de la arquitectura
+
+- Una vez finalice el video, encenderé las luces y abriré la escena original directamente en Blender. En lugar de dar un paseo aleatorio por la interfaz, haré un recorrido guiado y quirúrgico por los dos "cerebros" del sistema:
+- Abriré la ventana de Geometry Nodes. Mostraré específicamente la Simulation Zone, explicando visualmente que este bloque de nodos morados es la traducción exacta del bucle draw() que usábamos en p5.js para mantener la memoria y la inercia de las partículas.
+- Abriré el Shader Editor. Mostraré el nodo Attribute llamando a la variable v (velocidad).
+- Esta fase es crucial para evidenciar la transferencia de aprendizaje. No me limitaré a mostrar los nodos estáticos; demostraré que entiendo el sistema haciendo una alteración en vivo. Desconectaré temporalmente el nodo Image Texture (el que contiene el archivo "Palabra oceano.jpg") en el Shader Editor. Al hacerlo, el público verá cómo la palabra desaparece y solo queda el océano azul. Esto probará empíricamente mi decisión de diseño más importante: la palabra "OCEAN" no es geometría modelada en 3D, es una pintura generada matemáticamente por la topografía del fluido.
 
 10. Evidencia del uso de IA.
 
+La dirección de arte, la decisión estética de convertir el texto en una textura proyectada y la lógica subyacente de transferencia de vectores y estados de simulación son de mi estricta autoría. Utilicé la IA (Gemini) como un tutor de sintaxis para comprender la estructura de la API de nodos de Blender. Me apoyé en la herramienta para entender cómo un concepto abstracto como p5.Vector.mag() se traducía en el uso combinado de Store Named Attribute en Geometry Nodes y el nodo Length dentro del ecosistema de Shader Nodes.
 
 ### 11. Código, archivo, proyecto o documentación técnica según la herramienta.
+
+<img width="1589" height="621" alt="Captura de pantalla 2026-05-12 140513" src="https://github.com/user-attachments/assets/4f47789b-92a2-4e9d-b141-273430e5b846" />
+
+<img width="1587" height="616" alt="Captura de pantalla 2026-05-12 140528" src="https://github.com/user-attachments/assets/0ed91601-98f0-4aac-91ef-7f36e6f6d64e" />
+
+[Archivos.zip](https://github.com/user-attachments/files/27680283/Archivos.zip)
+
 ### 12. Registro visual de la pieza.
+
+
+https://github.com/user-attachments/assets/eae2809a-60a7-42bf-915b-c66226a5bffe
+
 
 ## Bitácora de reflexión

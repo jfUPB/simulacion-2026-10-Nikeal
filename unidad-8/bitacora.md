@@ -121,7 +121,8 @@ https://www.heavym.net/es/top10-3d-projection-mapping/
 
 6. Bocetos.
 
-
+<img width="720" height="1280" alt="image" src="https://github.com/user-attachments/assets/56e8c2b8-de2d-4d1b-863a-6e3f1c1f1a2e" />
+<img width="720" height="1280" alt="image" src="https://github.com/user-attachments/assets/dd53ad28-c907-46cd-9792-b0dc233af360" />
 
 7. Explicación de la transferencia.
 
